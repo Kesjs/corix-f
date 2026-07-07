@@ -198,28 +198,72 @@ export default function RegisterPage() {
     setUploadProgress(10)
     
     try {
+      // Vérifier d'abord si le bucket existe et est accessible
+      try {
+        const { data: buckets, error: bucketError } = await supabase.storage.listBuckets()
+        
+        if (bucketError) {
+          console.warn('Impossible de vérifier les buckets:', bucketError)
+          // On continue quand même, peut-être que c'est un problème de permissions
+        } else {
+          const documentsBucketExists = buckets?.some(bucket => bucket.name === 'documents')
+          if (!documentsBucketExists) {
+            console.warn('Le bucket "documents" n\'existe pas dans Supabase Storage')
+            // Retourner null mais ne pas bloquer l'inscription
+            setErrors(prev => ({ ...prev, general: "Le système de documents est temporairement indisponible. Votre compte a été créé, mais vous devrez télécharger votre pièce d'identité plus tard." }))
+            return null
+          }
+        }
+      } catch (bucketCheckError) {
+        console.warn('Erreur lors de la vérification du bucket:', bucketCheckError)
+        // Continuer quand même
+      }
+      
       const fileExt = idFile.name.split('.').pop()
       const fileName = `${userId}-${Date.now()}.${fileExt}`
       const filePath = `id-documents/${fileName}`
       
-      // Simuler une progression (on peut améliorer cela plus tard)
-      setTimeout(() => setUploadProgress(50), 500)
+      // Progression simulée
+      setTimeout(() => setUploadProgress(30), 300)
       
-      const { error: uploadError } = await supabase.storage
+      // Tenter l'upload avec un timeout
+      const uploadPromise = supabase.storage
         .from('documents')
         .upload(filePath, idFile, {
           cacheControl: '3600',
           upsert: false
         })
       
+      // Timeout après 10 secondes
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Timeout lors de l\'upload')), 10000)
+      )
+      
+      const { error: uploadError } = await Promise.race([uploadPromise, timeoutPromise]) as any
+      
       if (uploadError) {
         console.error('Erreur upload:', uploadError)
-        setErrors(prev => ({ ...prev, idFile: "Erreur lors du téléchargement du document" }))
+        
+        // Message d'erreur plus spécifique selon le type d'erreur
+        let errorMessage = "Erreur lors du téléchargement du document"
+        if (uploadError.message?.includes('bucket') || uploadError.message?.includes('Bucket')) {
+          errorMessage = "Le système de stockage de documents est temporairement indisponible"
+        } else if (uploadError.message?.includes('permission') || uploadError.message?.includes('Permission')) {
+          errorMessage = "Permission refusée pour le téléchargement du document"
+        } else if (uploadError.message?.includes('size') || uploadError.message?.includes('Size')) {
+          errorMessage = "Le fichier est trop volumineux (max 5MB)"
+        }
+        
+        // Ajouter une erreur générale mais pas bloquante
+        setErrors(prev => ({ 
+          ...prev, 
+          general: errorMessage + ". Votre compte a été créé, mais vous devrez télécharger votre pièce d'identité plus tard."
+        }))
         return null
       }
       
-      // Simuler la progression
-      setTimeout(() => setUploadProgress(90), 1000)
+      // Progression
+      setTimeout(() => setUploadProgress(70), 600)
       
       // Récupérer l'URL publique
       const { data: { publicUrl } } = supabase.storage
@@ -227,16 +271,29 @@ export default function RegisterPage() {
         .getPublicUrl(filePath)
       
       setUploadProgress(100)
+      
+      // Attendre un peu pour que l'utilisateur voie la progression
+      await new Promise(resolve => setTimeout(resolve, 500))
+      
       return publicUrl
-    } catch (error) {
+    } catch (error: any) {
       console.error('Erreur upload:', error)
-      setErrors(prev => ({ ...prev, idFile: "Erreur lors du téléchargement du document" }))
+      
+      // Message d'erreur générique
+      const errorMessage = error.message?.includes('Timeout') 
+        ? "Le téléchargement a pris trop de temps" 
+        : "Erreur lors du téléchargement du document"
+      
+      setErrors(prev => ({ 
+        ...prev, 
+        general: errorMessage + ". Votre compte a été créé, mais vous devrez télécharger votre pièce d'identité plus tard."
+      }))
       return null
     } finally {
       setTimeout(() => {
         setIsUploading(false)
         setUploadProgress(0)
-      }, 1000)
+      }, 1500)
     }
   }
 
@@ -336,14 +393,33 @@ export default function RegisterPage() {
 
       // 2. Si l'inscription réussit et qu'on a un utilisateur
       if (authData.user) {
+        // 3. Uploader le document d'identité si disponible (en arrière-plan, non bloquant)
         let idDocumentUrl: string | null = null
-        
-        // 3. Uploader le document d'identité si disponible
         if (idFile) {
-          idDocumentUrl = await uploadIdDocument(authData.user.id)
+          // Démarrer l'upload en arrière-plan sans attendre le résultat
+          uploadIdDocument(authData.user.id)
+            .then(url => {
+              idDocumentUrl = url
+              // Si l'upload réussit, mettre à jour le profil avec l'URL
+              if (url && authData.user?.id) {
+                supabase
+                  .from('profiles')
+                  .update({ id_document_url: url })
+                  .eq('id', authData.user.id)
+                  .then(({ error }) => {
+                    if (error) {
+                      console.warn('Impossible de mettre à jour l\'URL du document:', error)
+                    }
+                  })
+              }
+            })
+            .catch(error => {
+              console.warn('Upload échoué en arrière-plan:', error)
+              // Non bloquant - l'utilisateur pourra télécharger le document plus tard
+            })
         }
         
-        // 4. Créer le profil dans la table profiles avec l'URL du document
+        // 4. Créer le profil dans la table profiles (sans l'URL du document pour l'instant)
         const profileData: any = {
           id: authData.user.id,
           last_name: lastName,
@@ -353,26 +429,25 @@ export default function RegisterPage() {
           id_type: idType,
           id_number: idNumber,
           phone: phone,
-          country: selectedCountry!.code, // Utilisation de ! car déjà vérifié plus haut
-          phone_code: selectedCountry!.phoneCode // Utilisation de ! car déjà vérifié plus haut
+          country: selectedCountry!.code,
+          phone_code: selectedCountry!.phoneCode
         }
         
-        // Ajouter l'URL du document si disponible
-        if (idDocumentUrl) {
-          profileData.id_document_url = idDocumentUrl
-        }
-        
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .upsert(profileData)
+        // Créer le profil (non bloquant)
+        try {
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .upsert(profileData)
 
-        if (profileError) {
-          console.error('Erreur lors de la création du profil:', profileError)
-          // On continue quand même, car le compte est créé
-          // L'utilisateur pourra compléter son profil plus tard
+          if (profileError) {
+            console.warn('Avertissement lors de la création du profil:', profileError)
+            // Non bloquant - l'utilisateur pourra compléter son profil plus tard
+          }
+        } catch (profileError) {
+          console.warn('Erreur non bloquante lors de la création du profil:', profileError)
         }
         
-        // Redirection vers la page de vérification
+        // Redirection vers la page de vérification (l'upload continue en arrière-plan)
         router.push("/auth/pending")
       } else {
         setErrors({ ...errors, general: "Compte créé mais utilisateur non disponible" })
