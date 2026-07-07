@@ -20,56 +20,96 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-border py-3">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-border py-3 md:bg-white/95 md:backdrop-blur-sm">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between">
             <Logo />
             
             {/* Menu Desktop */}
-            <nav className="hidden md:flex items-center gap-8">
-              <a href="#hero" className="text-sm font-medium text-foreground hover:text-accent transition-colors">
+            <nav className="hidden md:flex items-center gap-6 lg:gap-8">
+              <a 
+                href="#hero" 
+                className="text-sm font-medium text-foreground hover:text-accent transition-colors py-2 px-1"
+                style={{ touchAction: "manipulation" }}
+              >
                 {t("nav.home")}
               </a>
-              <a href="#apropos" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <a 
+                href="#apropos" 
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2 px-1"
+                style={{ touchAction: "manipulation" }}
+              >
                 {t("nav.about")}
               </a>
               
               {/* Dropdown Services */}
               <div className="relative group">
-                <button className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
+                <button 
+                  className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors py-2 px-1"
+                  style={{ touchAction: "manipulation" }}
+                >
                   {t("nav.services")}
                   <ChevronDown className="w-4 h-4" />
                 </button>
                 <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                   <div className="py-2">
-                    <a href="#produits" className="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50">
+                    <a 
+                      href="#produits" 
+                      className="block px-4 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                      style={{ touchAction: "manipulation" }}
+                    >
                       {t("nav.products")}
                     </a>
-                    <a href="#" className="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50">
+                    <a 
+                      href="#" 
+                      className="block px-4 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                      style={{ touchAction: "manipulation" }}
+                    >
                       {t("nav.loans")}
                     </a>
-                    <a href="#" className="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50">
+                    <a 
+                      href="#" 
+                      className="block px-4 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                      style={{ touchAction: "manipulation" }}
+                    >
                       {t("nav.savings")}
                     </a>
                   </div>
                 </div>
               </div>
               
-              <a href="#support" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <a 
+                href="#support" 
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2 px-1"
+                style={{ touchAction: "manipulation" }}
+              >
                 {t("nav.support")}
               </a>
             </nav>
 
-            <div className="flex items-center gap-4">
-              {/* Selecteur de langue */}
-              <LanguageSelector variant="header" />
+            <div className="flex items-center gap-3 md:gap-4">
+              {/* Sélecteur de langue compact pour la navbar */}
+              <div className="hidden sm:block">
+                <LanguageSelector variant="header" />
+              </div>
 
               <div className="hidden md:flex items-center gap-3">
                 <Link href="/auth/login">
-                  <Button variant="outline" size="sm">{t("nav.login")}</Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="py-2 px-4"
+                    style={{ touchAction: "manipulation" }}
+                  >
+                    {t("nav.login")}
+                  </Button>
                 </Link>
                 <Link href="/auth/register">
-                  <Button size="sm" className="bg-accent hover:bg-accent/90">
+                  <Button 
+                    size="sm" 
+                    className="bg-accent hover:bg-accent/90 py-2 px-4"
+                    style={{ touchAction: "manipulation" }}
+                  >
                     {t("nav.register")}
                   </Button>
                 </Link>
@@ -77,8 +117,10 @@ export default function LandingPage() {
 
               {/* Bouton Menu Mobile */}
               <button
-                className="md:hidden text-muted-foreground hover:text-foreground transition-colors"
+                className="md:hidden text-muted-foreground hover:text-foreground transition-colors p-2 -mr-2"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label={mobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+                style={{ touchAction: "manipulation" }}
               >
                 {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
@@ -88,18 +130,25 @@ export default function LandingPage() {
           {/* Menu Mobile */}
           {mobileMenuOpen && (
             <div className="md:hidden mt-4 pb-4 border-t border-border pt-4">
-              <nav className="flex flex-col gap-4">
+              <nav className="flex flex-col gap-2">
+                {/* Sélecteur de langue dans le menu mobile */}
+                <div className="py-2 px-2">
+                  <LanguageSelector variant="simple" />
+                </div>
+                
                 <a 
                   href="#hero" 
-                  className="text-sm font-medium text-foreground hover:text-accent transition-colors py-2"
+                  className="text-base font-medium text-foreground hover:text-accent transition-colors py-3 px-2 rounded-lg hover:bg-secondary/50"
                   onClick={() => setMobileMenuOpen(false)}
+                  style={{ touchAction: "manipulation" }}
                 >
                   {t("nav.home")}
                 </a>
                 <a 
                   href="#apropos" 
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
+                  className="text-base text-muted-foreground hover:text-foreground transition-colors py-3 px-2 rounded-lg hover:bg-secondary/50"
                   onClick={() => setMobileMenuOpen(false)}
+                  style={{ touchAction: "manipulation" }}
                 >
                   {t("nav.about")}
                 </a>
@@ -107,32 +156,36 @@ export default function LandingPage() {
                 {/* Services dropdown mobile */}
                 <div className="relative">
                   <button 
-                    className="flex items-center justify-between w-full text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
+                    className="flex items-center justify-between w-full text-base text-muted-foreground hover:text-foreground transition-colors py-3 px-2 rounded-lg hover:bg-secondary/50"
                     onClick={() => setServicesDropdownOpen(!servicesDropdownOpen)}
+                    style={{ touchAction: "manipulation" }}
                   >
                     <span>{t("nav.services")}</span>
                     <ChevronDown className={`w-4 h-4 transition-transform ${servicesDropdownOpen ? 'rotate-180' : ''}`} />
                   </button>
                   {servicesDropdownOpen && (
-                    <div className="pl-4 mt-2 space-y-2 border-l border-border ml-2">
+                    <div className="pl-4 mt-1 space-y-1 border-l border-border ml-2">
                       <a 
                         href="#produits" 
-                        className="block text-sm text-muted-foreground hover:text-foreground py-2"
+                        className="block text-sm text-muted-foreground hover:text-foreground py-2 px-2 rounded hover:bg-secondary/50"
                         onClick={() => setMobileMenuOpen(false)}
+                        style={{ touchAction: "manipulation" }}
                       >
                         {t("nav.products")}
                       </a>
                       <a 
                         href="#" 
-                        className="block text-sm text-muted-foreground hover:text-foreground py-2"
+                        className="block text-sm text-muted-foreground hover:text-foreground py-2 px-2 rounded hover:bg-secondary/50"
                         onClick={() => setMobileMenuOpen(false)}
+                        style={{ touchAction: "manipulation" }}
                       >
                         {t("nav.loans")}
                       </a>
                       <a 
                         href="#" 
-                        className="block text-sm text-muted-foreground hover:text-foreground py-2"
+                        className="block text-sm text-muted-foreground hover:text-foreground py-2 px-2 rounded hover:bg-secondary/50"
                         onClick={() => setMobileMenuOpen(false)}
+                        style={{ touchAction: "manipulation" }}
                       >
                         {t("nav.savings")}
                       </a>
@@ -142,18 +195,30 @@ export default function LandingPage() {
                 
                 <a 
                   href="#support" 
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
+                  className="text-base text-muted-foreground hover:text-foreground transition-colors py-3 px-2 rounded-lg hover:bg-secondary/50"
                   onClick={() => setMobileMenuOpen(false)}
+                  style={{ touchAction: "manipulation" }}
                 >
                   {t("nav.support")}
                 </a>
                 
                 <div className="flex flex-col gap-3 mt-2 pt-4 border-t border-border">
                   <Link href="/auth/login" onClick={() => setMobileMenuOpen(false)}>
-                    <Button variant="outline" className="w-full">{t("nav.login")}</Button>
+                    <Button 
+                      variant="outline" 
+                      className="w-full py-3 text-base"
+                      style={{ touchAction: "manipulation" }}
+                    >
+                      {t("nav.login")}
+                    </Button>
                   </Link>
                   <Link href="/auth/register" onClick={() => setMobileMenuOpen(false)}>
-                    <Button className="w-full bg-accent hover:bg-accent/90">{t("nav.register")}</Button>
+                    <Button 
+                      className="w-full bg-accent hover:bg-accent/90 py-3 text-base"
+                      style={{ touchAction: "manipulation" }}
+                    >
+                      {t("nav.register")}
+                    </Button>
                   </Link>
                 </div>
               </nav>
@@ -163,14 +228,14 @@ export default function LandingPage() {
       </header>
 
       {/* Hero Section avec image de fond */}
-      <section id="hero" className="pt-32 pb-20 md:pt-40 md:pb-32 relative overflow-hidden">
+      <section id="hero" className="pt-20 pb-20 md:pt-40 md:pb-32 relative overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-[url('https://media.cdnws.com/_i/31111/RAW-32687/130/88/ambiance-gautier-office-zoom-chene-du-bocage-accueil-3.jpeg')] bg-cover bg-center" />
           <div className="absolute inset-0 bg-gradient-to-r from-primary/85 via-primary/60 to-transparent" />
         </div>
         
         <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-2xl">
+          <div className="max-w-2xl mx-auto md:mx-0 text-center md:text-left">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
               {t("hero.title")}
             </h1>
@@ -179,14 +244,23 @@ export default function LandingPage() {
               {t("hero.subtitle")}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <Link href="/auth/register">
-                <Button size="lg" className="bg-accent hover:bg-accent/90 text-white shadow-lg">
+                <Button 
+                  size="lg" 
+                  className="bg-accent hover:bg-accent/90 text-white shadow-lg py-3 px-6 min-h-[44px]"
+                  style={{ touchAction: "manipulation" }}
+                >
                   {t("hero.register")}
                 </Button>
               </Link>
               <Link href="/auth/login">
-                <Button size="lg" variant="outline" className="bg-white/20 text-white border-white/50 hover:bg-white/30 shadow-sm">
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="bg-white/20 text-white border-white/50 hover:bg-white/30 shadow-sm py-3 px-6 min-h-[44px]"
+                  style={{ touchAction: "manipulation" }}
+                >
                   {t("hero.login")}
                 </Button>
               </Link>
@@ -568,7 +642,9 @@ export default function LandingPage() {
               </Link>
             </div>
             
-            <LanguageSelector variant="simple" />
+            <div className="relative z-50">
+              <LanguageSelector variant="dropdown" />
+            </div>
           </div>
           
           <div className="border-t border-border pt-6 text-center">

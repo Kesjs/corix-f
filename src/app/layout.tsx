@@ -21,8 +21,6 @@ export const metadata: Metadata = {
   },
 };
 
-import { CookieConsent } from "@/components/ui/cookie-consent";
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -38,7 +36,6 @@ export default function RootLayout({
         <LanguageProvider>
           <AuthProvider>
             {children}
-            <CookieConsent />
           </AuthProvider>
         </LanguageProvider>
       </body>

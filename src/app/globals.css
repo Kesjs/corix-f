@@ -419,3 +419,134 @@
   transition: opacity 0.3s ease;
   pointer-events: none;
 }
+
+
+/* Améliorations pour l'accessibilité mobile */
+@media (max-width: 768px) {
+  /* S'assurer que les boutons et éléments cliquables ont une taille minimale pour les doigts */
+  button,
+  a[href],
+  [role="button"],
+  input[type="submit"],
+  input[type="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Améliorer la lisibilité du texte sur mobile */
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  
+  /* Améliorer l'expérience de défilement */
+  html {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Prévenir le zoom sur les champs de saisie */
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Améliorations générales pour le tactile */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Améliorer la réactivité des interactions tactiles */
+button:active,
+a:active {
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+
+/* Améliorations spécifiques pour la navbar mobile */
+@media (max-width: 767px) {
+  /* Ajuster la hauteur de la navbar */
+  header.fixed {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+  
+  /* S'assurer que le logo est bien visible */
+  header .logo-container {
+    min-width: 120px;
+  }
+  
+  /* Améliorer le sélecteur de langue sur mobile si visible */
+  .language-selector-mobile {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* S'assurer que le menu mobile ne dépasse pas la hauteur de l'écran */
+  .md\:hidden nav {
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+  }
+}
+
+/* Correction pour éviter que le contenu soit caché sous la navbar fixe */
+main, section {
+  scroll-margin-top: 80px;
+}
+
+/* Amélioration pour les liens d'ancrage avec navbar fixe */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+
+/* Améliorations pour le sélecteur de langue */
+.language-selector-dropdown button {
+  transition: all 0.2s ease;
+}
+
+.language-selector-dropdown button:active {
+  transform: scale(0.98);
+}
+
+/* Assurer que le dropdown ne dépasse pas l'écran sur mobile */
+@media (max-width: 768px) {
+  .language-selector-dropdown .absolute {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 90vw !important;
+    max-width: 300px !important;
+    max-height: 80vh !important;
+    overflow-y: auto !important;
+  }
+  
+  .language-selector-dropdown .fixed.inset-0 {
+    z-index: 40 !important;
+  }
+  
+  .language-selector-dropdown .absolute.z-50 {
+    z-index: 50 !important;
+  }
+}
+
+/* Animation pour l'ouverture du dropdown */
+@keyframes languageDropdownAppear {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) translateX(-50%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) translateX(-50%);
+  }
+}
+
+.language-selector-dropdown .absolute {
+  animation: languageDropdownAppear 0.2s ease-out;
+}

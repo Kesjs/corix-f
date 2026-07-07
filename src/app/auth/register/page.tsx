@@ -11,6 +11,7 @@ import { Eye, EyeOff, ChevronDown, User, Building, Briefcase, Mail, FileText, Ph
 import Link from "next/link"
 import { createClient } from "@/lib/supabase"
 import { useRouter } from "next/navigation"
+import { useLanguage } from "@/contexts/language-context"
 
 type Country = {
   code: string
@@ -23,6 +24,7 @@ type Country = {
 }
 
 export default function RegisterPage() {
+  const { t } = useLanguage()
   const [lastName, setLastName] = useState("")
   const [firstName, setFirstName] = useState("")
   const [city, setCity] = useState("")
@@ -83,67 +85,67 @@ export default function RegisterPage() {
 
   // Fonctions de validation
   const validateLastName = (value: string): string | undefined => {
-    if (!value.trim()) return "Le nom est requis"
-    if (value.length < 2) return "Le nom doit contenir au moins 2 caractères"
-    if (!/^[a-zA-ZÀ-ÿ\s\-']+$/.test(value)) return "Le nom ne doit contenir que des lettres"
+    if (!value.trim()) return t("validation.lastNameRequired")
+    if (value.length < 2) return t("validation.lastNameMinLength")
+    if (!/^[a-zA-ZÀ-ÿ\s\-']+$/.test(value)) return t("validation.lastNameInvalid")
     return undefined
   }
 
   const validateFirstName = (value: string): string | undefined => {
-    if (!value.trim()) return "Le prénom est requis"
-    if (value.length < 2) return "Le prénom doit contenir au moins 2 caractères"
-    if (!/^[a-zA-ZÀ-ÿ\s\-']+$/.test(value)) return "Le prénom ne doit contenir que des lettres"
+    if (!value.trim()) return t("validation.firstNameRequired")
+    if (value.length < 2) return t("validation.firstNameMinLength")
+    if (!/^[a-zA-ZÀ-ÿ\s\-']+$/.test(value)) return t("validation.firstNameInvalid")
     return undefined
   }
 
   const validateCity = (value: string): string | undefined => {
-    if (!value.trim()) return "La ville est requise"
-    if (value.length < 2) return "La ville doit contenir au moins 2 caractères"
+    if (!value.trim()) return t("validation.cityRequired")
+    if (value.length < 2) return t("validation.cityMinLength")
     return undefined
   }
 
   const validateProfession = (value: string): string | undefined => {
-    if (value && value.length > 100) return "La profession ne doit pas dépasser 100 caractères"
+    if (value && value.length > 100) return t("validation.professionMaxLength")
     return undefined
   }
 
   const validateIdType = (value: string): string | undefined => {
-    if (!value) return "Le type de pièce d'identité est requis"
+    if (!value) return t("validation.idTypeRequired")
     return undefined
   }
 
   const validateIdNumber = (value: string): string | undefined => {
-    if (!value.trim()) return "Le numéro de pièce d'identité est requis"
-    if (value.length < 4) return "Le numéro doit contenir au moins 4 caractères"
-    if (!/^[a-zA-Z0-9\s\-]+$/.test(value)) return "Format invalide (lettres et chiffres seulement)"
+    if (!value.trim()) return t("validation.idNumberRequired")
+    if (value.length < 4) return t("validation.idNumberMinLength")
+    if (!/^[a-zA-Z0-9\s\-]+$/.test(value)) return t("validation.idNumberInvalid")
     return undefined
   }
 
   const validateIdFile = (file: File | null): string | undefined => {
-    if (!file) return "Le document d'identité est requis"
-    if (file.size > 5 * 1024 * 1024) return "Le fichier ne doit pas dépasser 5MB"
+    if (!file) return t("validation.idFileRequired")
+    if (file.size > 5 * 1024 * 1024) return t("validation.idFileTooLarge")
     const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf']
-    if (!allowedTypes.includes(file.type)) return "Format invalide (JPG, PNG ou PDF uniquement)"
+    if (!allowedTypes.includes(file.type)) return t("validation.idFileInvalidType")
     return undefined
   }
 
   const validateEmail = (value: string): string | undefined => {
-    if (!value.trim()) return "L'email est requis"
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return "Format d'email invalide"
+    if (!value.trim()) return t("validation.emailRequired")
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return t("validation.emailInvalid")
     return undefined
   }
 
   const validatePassword = (value: string): string | undefined => {
-    if (!value) return "Le mot de passe est requis"
-    if (value.length < 8) return "Au moins 8 caractères"
-    if (!/[A-Z]/.test(value)) return "Au moins une majuscule"
-    if (!/[0-9]/.test(value)) return "Au moins un chiffre"
+    if (!value) return t("validation.passwordRequired")
+    if (value.length < 8) return t("validation.passwordMinLength")
+    if (!/[A-Z]/.test(value)) return t("validation.passwordUppercase")
+    if (!/[0-9]/.test(value)) return t("validation.passwordNumber")
     return undefined
   }
 
   const validateConfirmPassword = (value: string): string | undefined => {
-    if (!value) return "La confirmation du mot de passe est requise"
-    if (value !== password) return "Les mots de passe ne correspondent pas"
+    if (!value) return t("validation.confirmPasswordRequired")
+    if (value !== password) return t("validation.confirmPasswordMismatch")
     return undefined
   }
 

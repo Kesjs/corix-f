@@ -27,8 +27,8 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.register": "Ouvrir un compte",
     
     // Hero section
-    "hero.title": "Votre argent, simplement, partout",
-    "hero.subtitle": "La première banque digitale espagnole qui simplifie votre vie financière. Compte, carte, épargne et crédit en une seule application.",
+    "hero.title": "Bienvenue sur le portail de notre banque",
+    "hero.subtitle": "Accédez à vos services bancaires en ligne en toute sécurité",
     "hero.register": "Ouvrir un compte gratuitement",
     "hero.login": "Se connecter à mon compte",
     
@@ -121,6 +121,35 @@ const translations: Record<Language, Record<string, string>> = {
     "common.more": "En savoir plus",
     "common.selectCountry": "Sélectionnez un pays",
     "common.required": "Requis",
+    
+    // Validation errors
+    "validation.lastNameRequired": "Le nom est requis",
+    "validation.lastNameMinLength": "Le nom doit contenir au moins 2 caractères",
+    "validation.lastNameInvalid": "Le nom ne doit contenir que des lettres",
+    "validation.firstNameRequired": "Le prénom est requis",
+    "validation.firstNameMinLength": "Le prénom doit contenir au moins 2 caractères",
+    "validation.firstNameInvalid": "Le prénom ne doit contenir que des lettres",
+    "validation.cityRequired": "La ville est requise",
+    "validation.cityMinLength": "La ville doit contenir au moins 2 caractères",
+    "validation.professionMaxLength": "La profession ne doit pas dépasser 100 caractères",
+    "validation.idTypeRequired": "Le type de pièce d'identité est requis",
+    "validation.idNumberRequired": "Le numéro de pièce d'identité est requis",
+    "validation.idNumberMinLength": "Le numéro doit contenir au moins 4 caractères",
+    "validation.idNumberInvalid": "Format invalide (lettres et chiffres seulement)",
+    "validation.idFileRequired": "Le document d'identité est requis",
+    "validation.idFileTooLarge": "Le fichier ne doit pas dépasser 5MB",
+    "validation.idFileInvalidType": "Format invalide (JPG, PNG ou PDF uniquement)",
+    "validation.emailRequired": "L'email est requis",
+    "validation.emailInvalid": "Format d'email invalide",
+    "validation.passwordRequired": "Le mot de passe est requis",
+    "validation.passwordMinLength": "Au moins 8 caractères",
+    "validation.passwordUppercase": "Au moins une majuscule",
+    "validation.passwordNumber": "Au moins un chiffre",
+    "validation.confirmPasswordRequired": "La confirmation du mot de passe est requise",
+    "validation.confirmPasswordMismatch": "Les mots de passe ne correspondent pas",
+    "validation.phoneRequired": "Le numéro de téléphone est requis",
+    "validation.phoneInvalid": "Numéro de téléphone invalide",
+    "validation.termsRequired": "Vous devez accepter les conditions générales",
   },
   es: {
     // Navigation
@@ -135,8 +164,8 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.register": "Abrir una cuenta",
     
     // Hero section
-    "hero.title": "Tu dinero, simplemente, en todas partes",
-    "hero.subtitle": "El primer banco digital español que simplifica tu vida financiera. Cuenta, tarjeta, ahorro y crédito en una sola aplicación.",
+    "hero.title": "Bienvenido al portal de nuestro banco",
+    "hero.subtitle": "Acceda a sus servicios bancarios en línea con total seguridad",
     "hero.register": "Abrir una cuenta gratis",
     "hero.login": "Iniciar sesión en mi cuenta",
     
@@ -229,6 +258,35 @@ const translations: Record<Language, Record<string, string>> = {
     "common.more": "Saber más",
     "common.selectCountry": "Seleccionar país",
     "common.required": "Requerido",
+    
+    // Validation errors
+    "validation.lastNameRequired": "El apellido es requerido",
+    "validation.lastNameMinLength": "El apellido debe contener al menos 2 caracteres",
+    "validation.lastNameInvalid": "El apellido solo debe contener letras",
+    "validation.firstNameRequired": "El nombre es requerido",
+    "validation.firstNameMinLength": "El nombre debe contener al menos 2 caracteres",
+    "validation.firstNameInvalid": "El nombre solo debe contener letras",
+    "validation.cityRequired": "La ciudad es requerida",
+    "validation.cityMinLength": "La ciudad debe contener al menos 2 caracteres",
+    "validation.professionMaxLength": "La profesión no debe exceder 100 caracteres",
+    "validation.idTypeRequired": "El tipo de documento de identidad es requerido",
+    "validation.idNumberRequired": "El número de documento de identidad es requerido",
+    "validation.idNumberMinLength": "El número debe contener al menos 4 caracteres",
+    "validation.idNumberInvalid": "Formato inválido (solo letras y números)",
+    "validation.idFileRequired": "El documento de identidad es requerido",
+    "validation.idFileTooLarge": "El archivo no debe exceder 5MB",
+    "validation.idFileInvalidType": "Formato inválido (solo JPG, PNG o PDF)",
+    "validation.emailRequired": "El email es requerido",
+    "validation.emailInvalid": "Formato de email inválido",
+    "validation.passwordRequired": "La contraseña es requerida",
+    "validation.passwordMinLength": "Al menos 8 caracteres",
+    "validation.passwordUppercase": "Al menos una mayúscula",
+    "validation.passwordNumber": "Al menos un número",
+    "validation.confirmPasswordRequired": "La confirmación de contraseña es requerida",
+    "validation.confirmPasswordMismatch": "Las contraseñas no coinciden",
+    "validation.phoneRequired": "El número de teléfono es requerido",
+    "validation.phoneInvalid": "Número de teléfono inválido",
+    "validation.termsRequired": "Debe aceptar los términos y condiciones",
   },
   en: {
     // Navigation
@@ -243,8 +301,8 @@ const translations: Record<Language, Record<string, string>> = {
     "nav.register": "Open an Account",
     
     // Hero section
-    "hero.title": "Your money, simply, everywhere",
-    "hero.subtitle": "The first Spanish digital bank that simplifies your financial life. Account, card, savings and credit in one single app.",
+    "hero.title": "Welcome to our bank portal",
+    "hero.subtitle": "Access your online banking services with complete security",
     "hero.register": "Open a free account",
     "hero.login": "Login to my account",
     
@@ -337,6 +395,35 @@ const translations: Record<Language, Record<string, string>> = {
     "common.more": "Learn more",
     "common.selectCountry": "Select country",
     "common.required": "Required",
+    
+    // Validation errors
+    "validation.lastNameRequired": "Last name is required",
+    "validation.lastNameMinLength": "Last name must be at least 2 characters",
+    "validation.lastNameInvalid": "Last name must contain only letters",
+    "validation.firstNameRequired": "First name is required",
+    "validation.firstNameMinLength": "First name must be at least 2 characters",
+    "validation.firstNameInvalid": "First name must contain only letters",
+    "validation.cityRequired": "City is required",
+    "validation.cityMinLength": "City must be at least 2 characters",
+    "validation.professionMaxLength": "Profession must not exceed 100 characters",
+    "validation.idTypeRequired": "ID document type is required",
+    "validation.idNumberRequired": "ID document number is required",
+    "validation.idNumberMinLength": "Number must be at least 4 characters",
+    "validation.idNumberInvalid": "Invalid format (letters and numbers only)",
+    "validation.idFileRequired": "ID document is required",
+    "validation.idFileTooLarge": "File must not exceed 5MB",
+    "validation.idFileInvalidType": "Invalid format (JPG, PNG or PDF only)",
+    "validation.emailRequired": "Email is required",
+    "validation.emailInvalid": "Invalid email format",
+    "validation.passwordRequired": "Password is required",
+    "validation.passwordMinLength": "At least 8 characters",
+    "validation.passwordUppercase": "At least one uppercase letter",
+    "validation.passwordNumber": "At least one number",
+    "validation.confirmPasswordRequired": "Password confirmation is required",
+    "validation.confirmPasswordMismatch": "Passwords do not match",
+    "validation.phoneRequired": "Phone number is required",
+    "validation.phoneInvalid": "Invalid phone number",
+    "validation.termsRequired": "You must accept the terms and conditions",
   }
 }
 
