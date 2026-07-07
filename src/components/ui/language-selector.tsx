@@ -115,8 +115,11 @@ export function LanguageSelector({ variant = "header", className }: LanguageSele
 
   // Variant "header" (par défaut)
   return (
-    <div className="relative group">
-      <button className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
+    <div className="relative">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+      >
         <div className="flex items-center gap-1.5">
           <div className="relative w-5 h-4">
             <Image
@@ -128,33 +131,45 @@ export function LanguageSelector({ variant = "header", className }: LanguageSele
           </div>
           <span>{selectedLanguage.code.toUpperCase()}</span>
         </div>
-        <ChevronDown className="w-3 h-3" />
+        <ChevronDown className={cn(
+          "w-3 h-3 transition-transform",
+          isOpen && "rotate-180"
+        )} />
       </button>
       
-      <div className="absolute top-full right-0 mt-2 w-40 bg-white rounded-xl shadow-lg border border-border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
-        <div className="py-2">
-          {languages.map((language) => (
-            <button
-              key={language.code}
-              onClick={() => handleLanguageSelect(language)}
-              className="flex items-center gap-3 w-full px-4 py-2.5 text-sm hover:bg-secondary/50 transition-colors"
-            >
-              <div className="relative w-5 h-4">
-                <Image
-                  src={language.flag}
-                  alt={language.name}
-                  fill
-                  className="object-cover rounded-sm"
-                />
-              </div>
-              <span className="font-medium">{language.name}</span>
-              {selectedLanguage.code === language.code && (
-                <div className="ml-auto w-1.5 h-1.5 bg-accent rounded-full" />
-              )}
-            </button>
-          ))}
-        </div>
-      </div>
+      {isOpen && (
+        <>
+          {/* Backdrop blur for mobile */}
+          <div 
+            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden"
+            onClick={() => setIsOpen(false)}
+          />
+          <div className="absolute top-full right-0 mt-2 w-40 bg-white rounded-xl shadow-lg border border-border z-50 overflow-hidden">
+            <div className="py-2">
+              {languages.map((language) => (
+                <button
+                  key={language.code}
+                  onClick={() => handleLanguageSelect(language)}
+                  className="flex items-center gap-3 w-full px-4 py-2.5 text-sm hover:bg-secondary/50 transition-colors cursor-pointer"
+                >
+                  <div className="relative w-5 h-4">
+                    <Image
+                      src={language.flag}
+                      alt={language.name}
+                      fill
+                      className="object-cover rounded-sm"
+                    />
+                  </div>
+                  <span className="font-medium">{language.name}</span>
+                  {selectedLanguage.code === language.code && (
+                    <div className="ml-auto w-1.5 h-1.5 bg-accent rounded-full" />
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }
