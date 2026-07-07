@@ -4,6 +4,7 @@ import { useState } from "react"
 import { ChevronDown } from "lucide-react"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
+import { useLanguage } from "@/contexts/language-context"
 
 type Language = {
   code: string
@@ -24,13 +25,13 @@ interface LanguageSelectorProps {
 
 export function LanguageSelector({ variant = "header", className }: LanguageSelectorProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const [selectedLanguage, setSelectedLanguage] = useState<Language>(languages[0])
+  const { language: currentLanguage, setLanguage } = useLanguage()
+  
+  const selectedLanguage = languages.find(lang => lang.code === currentLanguage) || languages[0]
 
   const handleLanguageSelect = (language: Language) => {
-    setSelectedLanguage(language)
+    setLanguage(language.code as "fr" | "es" | "en")
     setIsOpen(false)
-    // Ici, vous pourriez ajouter la logique pour changer la langue de l'application
-    console.log(`Langue sélectionnée: ${language.code}`)
   }
 
   if (variant === "simple") {
@@ -54,7 +55,7 @@ export function LanguageSelector({ variant = "header", className }: LanguageSele
       <div className="relative">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-border hover:bg-secondary/50 transition-colors"
+          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-border hover:bg-secondary/50 transition-colors cursor-pointer"
         >
           <div className="relative w-5 h-4">
             <Image
@@ -72,34 +73,41 @@ export function LanguageSelector({ variant = "header", className }: LanguageSele
         </button>
 
         {isOpen && (
-          <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-border z-50 overflow-hidden">
-            {languages.map((language) => (
-              <button
-                key={language.code}
-                onClick={() => handleLanguageSelect(language)}
-                className={cn(
-                  "flex items-center gap-3 w-full px-4 py-3 hover:bg-secondary/50 transition-colors",
-                  selectedLanguage.code === language.code && "bg-accent/10"
-                )}
-              >
-                <div className="relative w-6 h-5">
-                  <Image
-                    src={language.flag}
-                    alt={language.name}
-                    fill
-                    className="object-cover rounded-sm"
-                  />
-                </div>
-                <div className="flex flex-col items-start">
-                  <span className="text-sm font-medium">{language.name}</span>
-                  <span className="text-xs text-muted-foreground">{language.code.toUpperCase()}</span>
-                </div>
-                {selectedLanguage.code === language.code && (
-                  <div className="ml-auto w-2 h-2 bg-accent rounded-full" />
-                )}
-              </button>
-            ))}
-          </div>
+          <>
+            {/* Backdrop blur for mobile */}
+            <div 
+              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden"
+              onClick={() => setIsOpen(false)}
+            />
+            <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-border z-50 overflow-hidden">
+              {languages.map((language) => (
+                <button
+                  key={language.code}
+                  onClick={() => handleLanguageSelect(language)}
+                  className={cn(
+                    "flex items-center gap-3 w-full px-4 py-3 hover:bg-secondary/50 transition-colors cursor-pointer",
+                    selectedLanguage.code === language.code && "bg-accent/10"
+                  )}
+                >
+                  <div className="relative w-6 h-5">
+                    <Image
+                      src={language.flag}
+                      alt={language.name}
+                      fill
+                      className="object-cover rounded-sm"
+                    />
+                  </div>
+                  <div className="flex flex-col items-start">
+                    <span className="text-sm font-medium">{language.name}</span>
+                    <span className="text-xs text-muted-foreground">{language.code.toUpperCase()}</span>
+                  </div>
+                  {selectedLanguage.code === language.code && (
+                    <div className="ml-auto w-2 h-2 bg-accent rounded-full" />
+                  )}
+                </button>
+              ))}
+            </div>
+          </>
         )}
       </div>
     )

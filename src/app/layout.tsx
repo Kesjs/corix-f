@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/auth/auth-provider";
 import { LanguageProvider } from "@/contexts/language-context";
+import NextTopLoader from "nextjs-toploader";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -33,6 +34,7 @@ export default function RootLayout({
       className={`${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
+        <NextTopLoader color="#FF6B35" showSpinner={false} />
         <LanguageProvider>
           <AuthProvider>
             {children}
