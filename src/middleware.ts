@@ -5,7 +5,7 @@ export async function middleware(request: NextRequest) {
   const sessionCookie = request.cookies.get('sb-access-token')
   
   // Routes protégées
-  const protectedRoutes = ['/dashboard', '/admin', '/cartes', '/transferts', '/epargne', '/profil']
+  const protectedRoutes = ['/dashboard', '/admin', '/cartes', '/transferts', '/epargne', '/profil', '/auth/kyc-upload']
   const isProtectedRoute = protectedRoutes.some(route => 
     request.nextUrl.pathname.startsWith(route)
   )

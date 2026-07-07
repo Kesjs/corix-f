@@ -41,9 +41,6 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [isSelectOpen, setIsSelectOpen] = useState(false)
-  const [idFile, setIdFile] = useState<File | null>(null)
-  const [uploadProgress, setUploadProgress] = useState(0)
-  const [isUploading, setIsUploading] = useState(false)
   const router = useRouter()
   const supabase = createClient()
 
@@ -121,14 +118,6 @@ export default function RegisterPage() {
     return undefined
   }
 
-  const validateIdFile = (file: File | null): string | undefined => {
-    if (!file) return t("validation.idFileRequired")
-    if (file.size > 5 * 1024 * 1024) return t("validation.idFileTooLarge")
-    const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf']
-    if (!allowedTypes.includes(file.type)) return t("validation.idFileInvalidType")
-    return undefined
-  }
-
   const validateEmail = (value: string): string | undefined => {
     if (!value.trim()) return t("validation.emailRequired")
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return t("validation.emailInvalid")
@@ -177,126 +166,6 @@ export default function RegisterPage() {
       }
     }
     setErrors(newErrors)
-  }
-
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] || null
-    setIdFile(file)
-    
-    const fileError = validateIdFile(file)
-    const newErrors = { ...errors }
-    if (fileError) {
-      newErrors.idFile = fileError
-    } else {
-      delete newErrors.idFile
-    }
-    setErrors(newErrors)
-  }
-
-  const uploadIdDocument = async (userId: string): Promise<string | null> => {
-    if (!idFile) return null
-    
-    setIsUploading(true)
-    setUploadProgress(10)
-    
-    try {
-      // Vérifier d'abord si le bucket existe et est accessible
-      try {
-        const { data: buckets, error: bucketError } = await supabase.storage.listBuckets()
-        
-        if (bucketError) {
-          console.warn('Impossible de vérifier les buckets:', bucketError)
-          // On continue quand même, peut-être que c'est un problème de permissions
-        } else {
-          const documentsBucketExists = buckets?.some(bucket => bucket.name === 'documents')
-          if (!documentsBucketExists) {
-            console.warn('Le bucket "documents" n\'existe pas dans Supabase Storage')
-            // Retourner null mais ne pas bloquer l'inscription
-            setErrors(prev => ({ ...prev, general: "Le système de documents est temporairement indisponible. Votre compte a été créé, mais vous devrez télécharger votre pièce d'identité plus tard." }))
-            return null
-          }
-        }
-      } catch (bucketCheckError) {
-        console.warn('Erreur lors de la vérification du bucket:', bucketCheckError)
-        // Continuer quand même
-      }
-      
-      const fileExt = idFile.name.split('.').pop()
-      const fileName = `${userId}-${Date.now()}.${fileExt}`
-      const filePath = `id-documents/${fileName}`
-      
-      // Progression simulée
-      setTimeout(() => setUploadProgress(30), 300)
-      
-      // Tenter l'upload avec un timeout
-      const uploadPromise = supabase.storage
-        .from('documents')
-        .upload(filePath, idFile, {
-          cacheControl: '3600',
-          upsert: false
-        })
-      
-      // Timeout après 10 secondes
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Timeout lors de l\'upload')), 10000)
-      )
-      
-      const { error: uploadError } = await Promise.race([uploadPromise, timeoutPromise]) as any
-      
-      if (uploadError) {
-        console.error('Erreur upload:', uploadError)
-        
-        // Message d'erreur plus spécifique selon le type d'erreur
-        let errorMessage = "Erreur lors du téléchargement du document"
-        if (uploadError.message?.includes('bucket') || uploadError.message?.includes('Bucket')) {
-          errorMessage = "Le système de stockage de documents est temporairement indisponible"
-        } else if (uploadError.message?.includes('permission') || uploadError.message?.includes('Permission')) {
-          errorMessage = "Permission refusée pour le téléchargement du document"
-        } else if (uploadError.message?.includes('size') || uploadError.message?.includes('Size')) {
-          errorMessage = "Le fichier est trop volumineux (max 5MB)"
-        }
-        
-        // Ajouter une erreur générale mais pas bloquante
-        setErrors(prev => ({ 
-          ...prev, 
-          general: errorMessage + ". Votre compte a été créé, mais vous devrez télécharger votre pièce d'identité plus tard."
-        }))
-        return null
-      }
-      
-      // Progression
-      setTimeout(() => setUploadProgress(70), 600)
-      
-      // Récupérer l'URL publique
-      const { data: { publicUrl } } = supabase.storage
-        .from('documents')
-        .getPublicUrl(filePath)
-      
-      setUploadProgress(100)
-      
-      // Attendre un peu pour que l'utilisateur voie la progression
-      await new Promise(resolve => setTimeout(resolve, 500))
-      
-      return publicUrl
-    } catch (error: any) {
-      console.error('Erreur upload:', error)
-      
-      // Message d'erreur générique
-      const errorMessage = error.message?.includes('Timeout') 
-        ? "Le téléchargement a pris trop de temps" 
-        : "Erreur lors du téléchargement du document"
-      
-      setErrors(prev => ({ 
-        ...prev, 
-        general: errorMessage + ". Votre compte a été créé, mais vous devrez télécharger votre pièce d'identité plus tard."
-      }))
-      return null
-    } finally {
-      setTimeout(() => {
-        setIsUploading(false)
-        setUploadProgress(0)
-      }, 1500)
-    }
   }
 
   const handlePhoneChange = (phoneValue: string, country: Country) => {
@@ -348,7 +217,6 @@ export default function RegisterPage() {
     validationErrors.profession = validateProfession(profession)
     validationErrors.idType = validateIdType(idType)
     validationErrors.idNumber = validateIdNumber(idNumber)
-    validationErrors.idFile = validateIdFile(idFile)
     validationErrors.email = validateEmail(email)
     validationErrors.password = validatePassword(password)
     validationErrors.confirmPassword = validateConfirmPassword(confirmPassword)
@@ -414,33 +282,7 @@ export default function RegisterPage() {
 
       // 2. Si l'inscription réussit et qu'on a un utilisateur
       if (authData.user) {
-        // 3. Uploader le document d'identité si disponible (en arrière-plan, non bloquant)
-        let idDocumentUrl: string | null = null
-        if (idFile) {
-          // Démarrer l'upload en arrière-plan sans attendre le résultat
-          uploadIdDocument(authData.user.id)
-            .then(url => {
-              idDocumentUrl = url
-              // Si l'upload réussit, mettre à jour le profil avec l'URL
-              if (url && authData.user?.id) {
-                supabase
-                  .from('profiles')
-                  .update({ id_document_url: url })
-                  .eq('id', authData.user.id)
-                  .then(({ error }) => {
-                    if (error) {
-                      console.warn('Impossible de mettre à jour l\'URL du document:', error)
-                    }
-                  })
-              }
-            })
-            .catch(error => {
-              console.warn('Upload échoué en arrière-plan:', error)
-              // Non bloquant - l'utilisateur pourra télécharger le document plus tard
-            })
-        }
-        
-        // 4. Créer le profil dans la table profiles (sans l'URL du document pour l'instant)
+      // 3. Créer le profil dans la table profiles
         const profileData: any = {
           id: authData.user.id,
           last_name: lastName,
@@ -468,8 +310,8 @@ export default function RegisterPage() {
           console.warn('Erreur non bloquante lors de la création du profil:', profileError)
         }
         
-        // Redirection directe vers le dashboard (email verification désactivée)
-        router.push("/dashboard")
+        // Redirection vers la page KYC pour télécharger le document d'identité
+        router.push("/auth/kyc-upload")
       } else {
         setErrors({ ...errors, general: "Compte créé mais utilisateur non disponible" })
       }
@@ -738,98 +580,6 @@ export default function RegisterPage() {
                     )}
                     <p className="text-xs text-muted-foreground">
                       Entrez le numéro exact tel qu'il apparaît sur votre document
-                    </p>
-                  </div>
-
-                  {/* Champ de téléchargement du document */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-foreground flex items-center gap-1">
-                      <FileText className="w-4 h-4" />
-                      Document d'identité *
-                    </label>
-                    <div className="border-2 border-dashed border-input rounded-lg p-6 text-center hover:border-accent/50 transition-colors cursor-pointer">
-                      <div className="flex flex-col items-center gap-2">
-                        <FileText className="w-8 h-8 text-muted-foreground" />
-                        <div>
-                          <p className="text-sm font-medium text-foreground">
-                            Téléchargez votre pièce d'identité
-                          </p>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            Formats acceptés : JPG, PNG, PDF (max 5MB)
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            Le document doit être lisible et en couleur
-                          </p>
-                        </div>
-                        <input
-                          type="file"
-                          id="id-document"
-                          className="hidden"
-                          accept=".jpg,.jpeg,.png,.pdf"
-                          onChange={handleFileSelect}
-                        />
-                        
-                        {/* Affichage du fichier sélectionné */}
-                        {idFile && (
-                          <div className="mt-2 p-2 bg-secondary/30 rounded-lg w-full">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2">
-                                <FileText className="w-4 h-4 text-accent" />
-                                <span className="text-xs font-medium text-foreground truncate max-w-[180px]">
-                                  {idFile.name}
-                                </span>
-                                <span className="text-xs text-muted-foreground">
-                                  ({(idFile.size / 1024 / 1024).toFixed(2)} MB)
-                                </span>
-                              </div>
-                              <Button 
-                                type="button" 
-                                variant="ghost" 
-                                size="sm"
-                                onClick={() => setIdFile(null)}
-                                className="h-6 px-2 text-xs"
-                              >
-                                ×
-                              </Button>
-                            </div>
-                            
-                            {/* Barre de progression */}
-                            {isUploading && uploadProgress > 0 && (
-                              <div className="mt-2">
-                                <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                                  <div 
-                                    className="h-full bg-accent rounded-full transition-all duration-300"
-                                    style={{ width: `${uploadProgress}%` }}
-                                  />
-                                </div>
-                                <p className="text-xs text-center text-muted-foreground mt-1">
-                                  Téléchargement en cours... {uploadProgress}%
-                                </p>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                        
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          size="sm"
-                          className="mt-2"
-                          onClick={() => document.getElementById('id-document')?.click()}
-                          disabled={isUploading}
-                        >
-                          {idFile ? 'Changer de fichier' : 'Choisir un fichier'}
-                        </Button>
-                      </div>
-                    </div>
-                    {errors.idFile && (
-                      <p className="text-destructive text-xs flex items-center gap-1">
-                        <span className="w-1 h-1 rounded-full bg-destructive"></span>
-                        {errors.idFile}
-                      </p>
-                    )}
-                    <p className="text-xs text-muted-foreground">
-                      Requis pour la vérification de votre compte bancaire
                     </p>
                   </div>
 

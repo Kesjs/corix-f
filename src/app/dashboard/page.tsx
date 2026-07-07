@@ -28,11 +28,6 @@ export default function DashboardPage() {
   const router = useRouter()
   const supabase = createClient()
 
-  useEffect(() => {
-    checkUser()
-    loadDashboardData()
-  }, [])
-
   const checkUser = async () => {
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) {
@@ -68,6 +63,11 @@ export default function DashboardPage() {
       setLoading(false)
     }, 1000)
   }
+
+  useEffect(() => {
+    checkUser()
+    loadDashboardData()
+  }, [])
 
   if (loading && !user) {
     return (

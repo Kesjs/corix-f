@@ -119,7 +119,7 @@ export default function LandingPage() {
               <button
                 className="md:hidden text-muted-foreground hover:text-foreground transition-colors p-2 -mr-2"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                aria-label={mobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+                aria-label={mobileMenuOpen ? t("menu.close") : t("menu.open")}
                 style={{ touchAction: "manipulation" }}
               >
                 {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -290,29 +290,29 @@ export default function LandingPage() {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold text-primary mb-4">Qui sommes-nous ?</h2>
+              <h2 className="text-3xl font-bold text-primary mb-4">{t("about.title")}</h2>
               <p className="text-muted-foreground max-w-2xl mx-auto">
-                Corix Finanza est une banque digitale innovante créée pour transformer le secteur financier en Espagne.
+                {t("about.description")}
               </p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
                 <p className="text-lg text-muted-foreground mb-6">
-                  Fondée en 2022, notre mission est de rendre les services bancaires accessibles, transparents et abordables pour tous, grâce à une technologie de pointe et une approche centrée sur l&apos;utilisateur.
+                  {t("about.paragraph1")}
                 </p>
                 <p className="text-lg text-muted-foreground mb-8">
-                  Nous croyons que chaque personne mérite un accès simple et sécurisé à des services financiers modernes, quels que soient son revenu, sa localisation ou son niveau d&apos;éducation.
+                  {t("about.paragraph2")}
                 </p>
                 
                 <div className="grid grid-cols-2 gap-6">
                   <div className="text-center">
                     <div className="text-3xl font-bold text-primary mb-2">2022</div>
-                    <div className="text-sm text-muted-foreground">Année de fondation</div>
+                    <div className="text-sm text-muted-foreground">{t("about.year")}</div>
                   </div>
                   <div className="text-center">
                     <div className="text-3xl font-bold text-primary mb-2">8</div>
-                    <div className="text-sm text-muted-foreground">Pays opérationnels</div>
+                    <div className="text-sm text-muted-foreground">{t("about.countries")}</div>
                   </div>
                 </div>
               </div>
@@ -324,8 +324,8 @@ export default function LandingPage() {
                       <Users className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-foreground">Notre équipe</h3>
-                      <p className="text-sm text-muted-foreground">Experts en finance, technologie et innovation</p>
+                      <h3 className="font-semibold text-foreground">{t("team.ourTeam")}</h3>
+                      <p className="text-sm text-muted-foreground">{t("team.expertsDesc")}</p>
                     </div>
                   </div>
                   
@@ -334,8 +334,8 @@ export default function LandingPage() {
                       <Shield className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-foreground">Notre engagement</h3>
-                      <p className="text-sm text-muted-foreground">Sécurité et conformité réglementaire totale</p>
+                      <h3 className="font-semibold text-foreground">{t("team.commitment")}</h3>
+                      <p className="text-sm text-muted-foreground">{t("team.securityDesc")}</p>
                     </div>
                   </div>
                   
@@ -344,8 +344,8 @@ export default function LandingPage() {
                       <Globe className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-foreground">Notre vision</h3>
-                      <p className="text-sm text-muted-foreground">Transformer le secteur financier africain</p>
+                      <h3 className="font-semibold text-foreground">{t("team.vision")}</h3>
+                      <p className="text-sm text-muted-foreground">{t("team.transformDesc")}</p>
                     </div>
                   </div>
                 </div>
@@ -359,9 +359,9 @@ export default function LandingPage() {
       <section id="promesses" className="py-20 bg-secondary/50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-primary mb-4">Nos promesses à vous</h2>
+            <h2 className="text-3xl font-bold text-primary mb-4">{t("promises.title")}</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Chez Corix Finanza, nous construisons une expérience bancaire différente
+              {t("promises.subtitle")}
             </p>
           </div>
 
@@ -370,9 +370,9 @@ export default function LandingPage() {
               <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Shield className="w-8 h-8 text-accent" />
               </div>
-              <h3 className="font-semibold text-foreground text-lg mb-3">Sécurité maximale</h3>
+              <h3 className="font-semibold text-foreground text-lg mb-3">{t("promises.security")}</h3>
               <p className="text-sm text-muted-foreground">
-                Chiffrement bancaire, authentification à deux facteurs et licence régulée
+                {t("promises.securityDesc")}
               </p>
             </div>
 
@@ -380,9 +380,9 @@ export default function LandingPage() {
               <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Zap className="w-8 h-8 text-accent" />
               </div>
-              <h3 className="font-semibold text-foreground text-lg mb-3">Rapidité instantanée</h3>
+              <h3 className="font-semibold text-foreground text-lg mb-3">{t("promises.speed")}</h3>
               <p className="text-sm text-muted-foreground">
-                Transferts en quelques secondes, ouverture de compte en 5 minutes
+                {t("promises.speedDesc")}
               </p>
             </div>
 
@@ -390,9 +390,9 @@ export default function LandingPage() {
               <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Eye className="w-8 h-8 text-accent" />
               </div>
-              <h3 className="font-semibold text-foreground text-lg mb-3">Transparence totale</h3>
+              <h3 className="font-semibold text-foreground text-lg mb-3">{t("promises.transparency")}</h3>
               <p className="text-sm text-muted-foreground">
-                Pas de frais cachés. Tous les taux affichés clairement
+                {t("promises.transparencyDesc")}
               </p>
             </div>
 
@@ -400,9 +400,9 @@ export default function LandingPage() {
               <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Users className="w-8 h-8 text-accent" />
               </div>
-              <h3 className="font-semibold text-foreground text-lg mb-3">Accessible à tous</h3>
+              <h3 className="font-semibold text-foreground text-lg mb-3">{t("promises.accessibility")}</h3>
               <p className="text-sm text-muted-foreground">
-                Interface simple et support en langue locale
+                {t("promises.accessibilityDesc")}
               </p>
             </div>
           </div>
@@ -413,9 +413,9 @@ export default function LandingPage() {
       <section id="produits" className="py-20 bg-secondary/50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-primary mb-4">Nos produits bancaires</h2>
+            <h2 className="text-3xl font-bold text-primary mb-4">{t("products.title")}</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Tout ce dont vous avez besoin pour gérer vos finances au quotidien
+              {t("products.subtitle")}
             </p>
           </div>
 
@@ -424,33 +424,33 @@ export default function LandingPage() {
               <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center mb-6">
                 <CreditCard className="w-6 h-6 text-accent" />
               </div>
-              <h3 className="font-bold text-foreground text-xl mb-4">Compte digital</h3>
+              <h3 className="font-bold text-foreground text-xl mb-4">{t("products.digitalAccount")}</h3>
               <p className="text-muted-foreground mb-6">
-                Ouvrez un compte en quelques minutes sans paperasse. Recevez votre carte virtuelle instantanément.
+                {t("products.digitalDesc")}
               </p>
-              <div className="text-sm text-accent font-medium">→ Ouvrir un compte gratuit</div>
+              <div className="text-sm text-accent font-medium">→ {t("products.openAccount")}</div>
             </div>
 
             <div className="bg-white rounded-2xl p-8 shadow-lg border border-border hover:shadow-xl transition-shadow">
               <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center mb-6">
                 <Send className="w-6 h-6 text-accent" />
               </div>
-              <h3 className="font-bold text-foreground text-xl mb-4">Transferts</h3>
+              <h3 className="font-bold text-foreground text-xl mb-4">{t("products.transfers")}</h3>
               <p className="text-muted-foreground mb-6">
-                Envoyez de l&apos;argent à vos proches instantanément, 24h/24, avec seulement 1% de frais.
+                {t("products.transfersDesc")}
               </p>
-              <div className="text-sm text-accent font-medium">→ Envoyer de l&apos;argent</div>
+              <div className="text-sm text-accent font-medium">→ {t("products.sendMoney")}</div>
             </div>
 
             <div className="bg-white rounded-2xl p-8 shadow-lg border border-border hover:shadow-xl transition-shadow">
               <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center mb-6">
                 <PiggyBank className="w-6 h-6 text-accent" />
               </div>
-              <h3 className="font-bold text-foreground text-xl mb-4">Épargne et crédit</h3>
+              <h3 className="font-bold text-foreground text-xl mb-4">{t("products.savings")}</h3>
               <p className="text-muted-foreground mb-6">
-                Épargnez automatiquement et accédez à des crédits rapides et transparents.
+                {t("products.savingsDesc")}
               </p>
-              <div className="text-sm text-accent font-medium">→ Découvrir nos solutions</div>
+              <div className="text-sm text-accent font-medium">→ {t("products.discover")}</div>
             </div>
           </div>
 
@@ -458,15 +458,15 @@ export default function LandingPage() {
           <div className="mt-16 grid md:grid-cols-3 gap-6">
             <div className="flex items-center gap-4">
               <Lock className="w-5 h-5 text-success" />
-              <span className="text-sm text-foreground">Licence bancaire régulée</span>
+              <span className="text-sm text-foreground">{t("feature.banking")}</span>
             </div>
             <div className="flex items-center gap-4">
               <Globe className="w-5 h-5 text-success" />
-              <span className="text-sm text-foreground">3 pays : Espagne, France, USA</span>
+              <span className="text-sm text-foreground">{t("feature.countries")}</span>
             </div>
             <div className="flex items-center gap-4">
               <Smartphone className="w-5 h-5 text-success" />
-              <span className="text-sm text-foreground">Application mobile iOS & Android</span>
+              <span className="text-sm text-foreground">{t("feature.mobile")}</span>
             </div>
           </div>
         </div>
@@ -476,9 +476,9 @@ export default function LandingPage() {
       <section id="preuve" className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-primary mb-4">Ce que disent nos clients</h2>
+            <h2 className="text-3xl font-bold text-primary mb-4">{t("testimonials.title")}</h2>
             <p className="text-muted-foreground">
-              Rejoignez la communauté de 50,000+ utilisateurs satisfaits
+              {t("testimonials.subtitle")}
             </p>
           </div>
 
@@ -490,7 +490,7 @@ export default function LandingPage() {
                 ))}
               </div>
               <p className="text-foreground italic mb-6">
-                &ldquo;Enfin une banque qui comprend les besoins des expatriés! J&apos;ai ouvert mon compte en 5 minutes et je peux envoyer de l&apos;argent à ma famille en quelques clics. Les frais sont vraiment bas comparés aux autres services.&rdquo;
+                &ldquo;{t("testimonial.1.quote")}&rdquo;
               </p>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
@@ -498,7 +498,7 @@ export default function LandingPage() {
                 </div>
                 <div>
                   <p className="font-medium text-foreground">Mariam Keita</p>
-                  <p className="text-sm text-muted-foreground">Entrepreneuse, Barcelone</p>
+                  <p className="text-sm text-muted-foreground">{t("testimonial.1.author")}</p>
                 </div>
               </div>
             </div>
@@ -510,7 +510,7 @@ export default function LandingPage() {
                 ))}
               </div>
               <p className="text-foreground italic mb-6">
-                &ldquo;En tant qu&apos;étudiant, j&apos;avais du mal à ouvrir un compte bancaire. Avec Corix Finanza, c&apos;était simple et rapide. J&apos;adore l&apos;app et le fait que je puisse épargner pour mes projets facilement.&rdquo;
+                &ldquo;{t("testimonial.2.quote")}&rdquo;
               </p>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
@@ -518,7 +518,7 @@ export default function LandingPage() {
                 </div>
                 <div>
                   <p className="font-medium text-foreground">Amadou Diallo</p>
-                  <p className="text-sm text-muted-foreground">Étudiant, Madrid</p>
+                  <p className="text-sm text-muted-foreground">{t("testimonial.2.author")}</p>
                 </div>
               </div>
             </div>
@@ -528,15 +528,15 @@ export default function LandingPage() {
           <div className="mt-16 grid grid-cols-3 gap-8 text-center">
             <div>
               <div className="text-3xl md:text-4xl font-bold text-primary mb-2">4.8/5</div>
-              <div className="text-sm text-muted-foreground">Note moyenne sur l&apos;App Store</div>
+              <div className="text-sm text-muted-foreground">{t("stats.rating")}</div>
             </div>
             <div>
               <div className="text-3xl md:text-4xl font-bold text-primary mb-2">98%</div>
-              <div className="text-sm text-muted-foreground">Clients satisfaits</div>
+              <div className="text-sm text-muted-foreground">{t("stats.satisfied")}</div>
             </div>
             <div>
               <div className="text-3xl md:text-4xl font-bold text-primary mb-2">10M €</div>
-              <div className="text-sm text-muted-foreground">Transférés ce mois</div>
+              <div className="text-sm text-muted-foreground">{t("stats.transferred")}</div>
             </div>
           </div>
         </div>
@@ -546,22 +546,22 @@ export default function LandingPage() {
       <section className="py-20 bg-gradient-to-br from-primary to-accent">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-            Prêt à simplifier votre vie financière ?
+            {t("cta.title")}
           </h2>
           <p className="text-white/80 mb-10 max-w-2xl mx-auto text-lg">
-            Rejoignez la révolution bancaire en Europe
+            {t("cta.subtitle")}
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/auth/register">
               <Button size="lg" className="bg-white text-primary hover:bg-white/90 shadow-lg">
-                Ouvrir mon compte gratuitement
+                {t("cta.register")}
               </Button>
             </Link>
             <Link href="/auth/login">
               <Button size="lg" variant="outline" className="bg-white/10 text-white border-white/40 hover:bg-white/20 shadow-sm">
                 <Wallet className="mr-2 w-5 h-5" />
-                Se connecter
+                {t("cta.login")}
               </Button>
             </Link>
           </div>
@@ -570,15 +570,15 @@ export default function LandingPage() {
           <div className="mt-12 grid grid-cols-2 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
             <div className="flex items-center gap-2 text-white/80 text-sm">
               <CheckCircle2 className="w-4 h-4" />
-              <span>Ouverture en 5 minutes</span>
+              <span>{t("advantage.quick")}</span>
             </div>
             <div className="flex items-center gap-2 text-white/80 text-sm">
               <CheckCircle2 className="w-4 h-4" />
-              <span>Pas de frais cachés</span>
+              <span>{t("advantage.noFees")}</span>
             </div>
             <div className="flex items-center gap-2 text-white/80 text-sm">
               <CheckCircle2 className="w-4 h-4" />
-              <span>Support 7j/7</span>
+              <span>{t("advantage.support")}</span>
             </div>
           </div>
         </div>
@@ -588,9 +588,9 @@ export default function LandingPage() {
       <section id="support" className="py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-primary mb-4">Support & Contact</h2>
+            <h2 className="text-3xl font-bold text-primary mb-4">{t("support.title")}</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Nous sommes là pour vous aider. Contactez-nous par le canal qui vous convient le mieux.
+              {t("support.subtitle")}
             </p>
           </div>
 
@@ -599,9 +599,9 @@ export default function LandingPage() {
               <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Send className="w-8 h-8 text-accent" />
               </div>
-              <h3 className="font-semibold text-foreground text-lg mb-3">Email</h3>
+              <h3 className="font-semibold text-foreground text-lg mb-3">{t("support.email")}</h3>
               <p className="text-sm text-muted-foreground mb-4">
-                Réponse sous 24h
+                {t("support.emailResponse")}
               </p>
               <a href="mailto:support@corix-finanza.com" className="text-accent font-medium hover:text-accent/80">
                 support@corix-finanza.com
@@ -612,12 +612,12 @@ export default function LandingPage() {
               <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Users className="w-8 h-8 text-accent" />
               </div>
-              <h3 className="font-semibold text-foreground text-lg mb-3">Centre d&apos;aide</h3>
+              <h3 className="font-semibold text-foreground text-lg mb-3">{t("support.helpCenter")}</h3>
               <p className="text-sm text-muted-foreground mb-4">
-                FAQ, tutoriels et guides
+                {t("support.faq")}
               </p>
               <a href="#" className="text-accent font-medium hover:text-accent/80">
-                Visiter le centre d&apos;aide
+                {t("support.visitHelp")}
               </a>
             </div>
           </div>
@@ -632,13 +632,13 @@ export default function LandingPage() {
             
             <div className="flex items-center gap-6">
               <Link href="/legal/cgu" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                CGU
+                {t("footer.cgu")}
               </Link>
               <Link href="/legal/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Confidentialité
+                {t("footer.privacy")}
               </Link>
               <Link href="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Contact
+                {t("footer.contact")}
               </Link>
             </div>
             
@@ -649,7 +649,7 @@ export default function LandingPage() {
           
           <div className="border-t border-border pt-6 text-center">
             <p className="text-sm text-muted-foreground">
-              © 2026 Corix Finanza. Tous droits réservés. Banque agréée et régulée en Espagne.
+              {t("footer.copyright")}
             </p>
           </div>
         </div>

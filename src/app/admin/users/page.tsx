@@ -23,10 +23,6 @@ export default function AdminUsersPage() {
   const [activeTab, setActiveTab] = useState("all")
   const supabase = createClient()
 
-  useEffect(() => {
-    fetchUsers()
-  }, [])
-
   const fetchUsers = async () => {
     setLoading(true)
     
@@ -144,6 +140,10 @@ export default function AdminUsersPage() {
       setLoading(false)
     }, 1500)
   }
+
+  useEffect(() => {
+    fetchUsers()
+  }, [])
 
   const filteredUsers = users.filter(user => {
     const matchesSearch = searchTerm === "" || 

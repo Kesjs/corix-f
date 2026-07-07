@@ -32,10 +32,6 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
 
-  useEffect(() => {
-    fetchDashboardData()
-  }, [])
-
   const fetchDashboardData = async () => {
     setLoading(true)
     
@@ -77,6 +73,10 @@ export default function AdminDashboard() {
       setLoading(false)
     }, 1000)
   }
+
+  useEffect(() => {
+    fetchDashboardData()
+  }, [])
 
   const getStatusColor = (status: string) => {
     switch(status) {

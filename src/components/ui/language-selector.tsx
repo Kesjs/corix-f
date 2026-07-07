@@ -20,10 +20,9 @@ const languages: Language[] = [
 
 interface LanguageSelectorProps {
   variant?: "header" | "dropdown" | "simple"
-  className?: string
 }
 
-export function LanguageSelector({ variant = "header", className }: LanguageSelectorProps) {
+export function LanguageSelector({ variant = "header" }: LanguageSelectorProps) {
   const [isOpen, setIsOpen] = useState(false)
   const { language: currentLanguage, setLanguage } = useLanguage()
   

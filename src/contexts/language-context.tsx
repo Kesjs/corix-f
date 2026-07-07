@@ -428,15 +428,18 @@ const translations: Record<Language, Record<string, string>> = {
 }
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>("fr")
-
-  // Charger la langue sauvegardée depuis localStorage au démarrage
-  useEffect(() => {
-    const savedLanguage = localStorage.getItem("language") as Language
-    if (savedLanguage && ["fr", "es", "en"].includes(savedLanguage)) {
-      setLanguage(savedLanguage)
+  // Initialiser l'état avec la langue sauvegardée depuis localStorage
+  const [language, setLanguage] = useState<Language>(() => {
+    if (typeof window !== "undefined") {
+      const savedLanguage = localStorage.getItem("language") as Language
+      if (savedLanguage && ["fr", "es", "en"].includes(savedLanguage)) {
+        return savedLanguage
+      }
     }
-  }, [])
+    return "fr"
+  })
+
+  // Pas besoin d'effet pour charger la langue initiale
 
   // Sauvegarder la langue dans localStorage et mettre à jour l'attribut lang du html
   useEffect(() => {
