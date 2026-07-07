@@ -165,7 +165,7 @@ export default function LandingPage() {
       {/* Hero Section avec image de fond */}
       <section id="hero" className="pt-32 pb-20 md:pt-40 md:pb-32 relative overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-[url('/banque.jpeg')] bg-cover bg-center" />
+          <div className="absolute inset-0 bg-[url('https://media.cdnws.com/_i/31111/RAW-32687/130/88/ambiance-gautier-office-zoom-chene-du-bocage-accueil-3.jpeg')] bg-cover bg-center" />
           <div className="absolute inset-0 bg-gradient-to-r from-primary/85 via-primary/60 to-transparent" />
         </div>
         
