@@ -554,13 +554,7 @@ export default function LandingPage() {
       <footer className="py-10 bg-background border-t border-border">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-6">
-            <div className="flex items-center gap-3">
-              <Logo variant="icon" className="w-10 h-10" />
-              <div className="flex flex-col">
-                <span className="font-bold text-primary text-xl leading-tight tracking-tight">Corix</span>
-                <span className="text-muted-foreground text-sm font-medium tracking-wider">FINANZA</span>
-              </div>
-            </div>
+            <Logo showText={true} />
             
             <div className="flex items-center gap-6">
               <Link href="/legal/cgu" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
