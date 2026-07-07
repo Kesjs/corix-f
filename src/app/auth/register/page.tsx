@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Logo } from "@/components/ui/logo"
 import { LanguageSelector } from "@/components/ui/language-selector"
 import { CountryPhoneSelector } from "@/components/ui/country-phone-selector"
-import { Eye, EyeOff, ChevronDown, User, Building, Briefcase, Mail, FileText, Phone, Lock, Globe, CreditCard, Car, Home } from "lucide-react"
+import { Eye, EyeOff, User, Building, Briefcase, Mail, Phone, Lock } from "lucide-react"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase"
 import { useRouter } from "next/navigation"
@@ -29,8 +29,6 @@ export default function RegisterPage() {
   const [firstName, setFirstName] = useState("")
   const [city, setCity] = useState("")
   const [profession, setProfession] = useState("")
-  const [idType, setIdType] = useState<string>("")
-  const [idNumber, setIdNumber] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
@@ -40,7 +38,6 @@ export default function RegisterPage() {
   const [acceptedTerms, setAcceptedTerms] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [isSelectOpen, setIsSelectOpen] = useState(false)
   const router = useRouter()
   const supabase = createClient()
 
@@ -50,9 +47,6 @@ export default function RegisterPage() {
     firstName?: string
     city?: string
     profession?: string
-    idType?: string
-    idNumber?: string
-    idFile?: string
     email?: string
     password?: string
     confirmPassword?: string
@@ -60,25 +54,6 @@ export default function RegisterPage() {
     terms?: string
     general?: string
   }>({})
-
-  // Options pour le type de pièce d'identité
-  const idTypes = [
-    { value: "passport", label: "Passeport", icon: "Globe" },
-    { value: "id_card", label: "Carte d'identité nationale", icon: "CreditCard" },
-    { value: "driving_license", label: "Permis de conduire", icon: "Car" },
-    { value: "residence_permit", label: "Titre de séjour", icon: "Home" },
-  ]
-
-  // Fonction pour obtenir le composant icône
-  const getIconComponent = (typeValue: string) => {
-    switch (typeValue) {
-      case "passport": return <Globe className="w-4 h-4" />
-      case "id_card": return <CreditCard className="w-4 h-4" />
-      case "driving_license": return <Car className="w-4 h-4" />
-      case "residence_permit": return <Home className="w-4 h-4" />
-      default: return <FileText className="w-4 h-4" />
-    }
-  }
 
   // Fonctions de validation
   const validateLastName = (value: string): string | undefined => {
@@ -103,18 +78,6 @@ export default function RegisterPage() {
 
   const validateProfession = (value: string): string | undefined => {
     if (value && value.length > 100) return t("validation.professionMaxLength")
-    return undefined
-  }
-
-  const validateIdType = (value: string): string | undefined => {
-    if (!value) return t("validation.idTypeRequired")
-    return undefined
-  }
-
-  const validateIdNumber = (value: string): string | undefined => {
-    if (!value.trim()) return t("validation.idNumberRequired")
-    if (value.length < 4) return t("validation.idNumberMinLength")
-    if (!/^[a-zA-Z0-9\s\-]+$/.test(value)) return t("validation.idNumberInvalid")
     return undefined
   }
 
@@ -215,8 +178,6 @@ export default function RegisterPage() {
     validationErrors.firstName = validateFirstName(firstName)
     validationErrors.city = validateCity(city)
     validationErrors.profession = validateProfession(profession)
-    validationErrors.idType = validateIdType(idType)
-    validationErrors.idNumber = validateIdNumber(idNumber)
     validationErrors.email = validateEmail(email)
     validationErrors.password = validatePassword(password)
     validationErrors.confirmPassword = validateConfirmPassword(confirmPassword)
@@ -265,8 +226,6 @@ export default function RegisterPage() {
             first_name: firstName,
             city: city,
             profession: profession,
-            id_type: idType,
-            id_number: idNumber,
             phone: phone,
             country: selectedCountry.code,
             phone_code: selectedCountry.phoneCode
@@ -282,25 +241,21 @@ export default function RegisterPage() {
 
       // 2. Si l'inscription réussit et qu'on a un utilisateur
       if (authData.user) {
-      // 3. Créer le profil dans la table profiles
-        const profileData: any = {
-          id: authData.user.id,
-          last_name: lastName,
-          first_name: firstName,
-          city: city,
-          profession: profession,
-          id_type: idType,
-          id_number: idNumber,
-          phone: phone,
-          country: selectedCountry!.code,
-          phone_code: selectedCountry!.phoneCode
-        }
-        
+        // 3. Créer le profil dans la table profiles
         // Créer le profil (non bloquant)
         try {
           const { error: profileError } = await supabase
             .from('profiles')
-            .upsert(profileData)
+            .upsert({
+              id: authData.user.id,
+              last_name: lastName,
+              first_name: firstName,
+              city: city,
+              profession: profession,
+              phone: phone,
+              country: selectedCountry!.code,
+              phone_code: selectedCountry!.phoneCode
+            })
 
           if (profileError) {
             console.warn('Avertissement lors de la création du profil:', profileError)
@@ -310,8 +265,8 @@ export default function RegisterPage() {
           console.warn('Erreur non bloquante lors de la création du profil:', profileError)
         }
         
-        // Redirection vers la page KYC pour télécharger le document d'identité
-        router.push("/auth/kyc-upload")
+        // Redirection vers le dashboard - le KYC pourra être fait plus tard
+        router.push("/dashboard")
       } else {
         setErrors({ ...errors, general: "Compte créé mais utilisateur non disponible" })
       }
@@ -335,9 +290,9 @@ export default function RegisterPage() {
       <main className="flex-1 flex items-center justify-center p-4">
         <Card className="w-full max-w-6xl shadow-lg border-border/50">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl text-primary">Créer votre compte bancaire</CardTitle>
+            <CardTitle className="text-2xl text-primary">Créer votre compte</CardTitle>
             <CardDescription>
-              Remplissez vos informations personnelles pour ouvrir votre compte Corix Finanza
+              Quelques informations de base pour commencer avec Corix Finanza
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -482,107 +437,10 @@ export default function RegisterPage() {
                   </div>
                 </div>
 
-                {/* Colonne droite - Informations d'identité et sécurité */}
+                {/* Colonne droite - Informations de contact et sécurité */}
                 <div className="space-y-4">
-                  <h3 className="font-medium text-foreground border-b pb-2">Informations d'identité et sécurité</h3>
+                  <h3 className="font-medium text-foreground border-b pb-2">Informations de contact et sécurité</h3>
                   
-                  <div className="space-y-3">
-                    <label className="text-sm font-medium text-foreground flex items-center gap-1">
-                      <FileText className="w-4 h-4" />
-                      Type de pièce d'identité *
-                    </label>
-                    
-                    {/* Sélecteur personnalisé */}
-                    <div className="relative">
-                      <div className="w-full px-4 py-3 border border-input rounded-lg bg-background text-foreground text-sm cursor-pointer hover:border-accent/50 shadow-sm flex items-center justify-between"
-                           onClick={() => setIsSelectOpen(!isSelectOpen)}
-                      >
-                        <div className="flex items-center gap-3">
-                          {idType ? (
-                            <>
-                              {getIconComponent(idType)}
-                              <span className="font-medium">{idTypes.find(t => t.value === idType)?.label}</span>
-                            </>
-                          ) : (
-                            <>
-                              <FileText className="w-4 h-4 text-muted-foreground" />
-                              <span className="text-muted-foreground">Sélectionnez un type de document</span>
-                            </>
-                          )}
-                        </div>
-                        <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${isSelectOpen ? "rotate-180" : ""}`} />
-                      </div>
-                      
-                      {/* Menu déroulant */}
-                      {isSelectOpen && (
-                        <div className="absolute z-10 w-full mt-1 border border-input rounded-lg bg-background shadow-lg">
-                          {idTypes.map((type) => (
-                            <div
-                              key={type.value}
-                              className={`px-4 py-3 flex items-center gap-3 cursor-pointer hover:bg-accent/5 ${idType === type.value ? "bg-accent/10" : ""}`}
-                              onClick={() => {
-                                setIdType(type.value);
-                                setIsSelectOpen(false);
-                              }}
-                            >
-                              {getIconComponent(type.value)}
-                              <span className="text-sm">{type.label}</span>
-                              {idType === type.value && (
-                                <div className="ml-auto">
-                                  <div className="w-2 h-2 rounded-full bg-accent" />
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                    
-                    {/* Aide visuelle */}
-                    <div className="text-xs text-muted-foreground">
-                      {idType && (
-                        <div className="flex items-center gap-2 text-accent">
-                          <FileText className="w-3 h-3" />
-                          {idType === "passport" && "Document de voyage international requis"}
-                          {idType === "id_card" && "Document officiel d'identité nationale"}
-                          {idType === "driving_license" && "Permis de conduire officiel valide"}
-                          {idType === "residence_permit" && "Autorisation de séjour en cours de validité"}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-foreground flex items-center gap-1">
-                      <FileText className="w-4 h-4" />
-                      Numéro de pièce d'identité *
-                    </label>
-                    <div className="relative">
-                      <Input 
-                        placeholder="Ex: AB123456, 12AB345678, etc." 
-                        value={idNumber}
-                        onChange={(e) => {
-                          setIdNumber(e.target.value)
-                          handleFieldChange('idNumber', e.target.value, validateIdNumber)
-                        }}
-                        onBlur={() => handleFieldChange('idNumber', idNumber, validateIdNumber)}
-                        className="pl-10"
-                        required
-                        data-error={errors.idNumber ? "true" : "false"}
-                      />
-                      <FileText className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    </div>
-                    {errors.idNumber && (
-                      <p className="text-destructive text-xs flex items-center gap-1">
-                        <span className="w-1 h-1 rounded-full bg-destructive"></span>
-                        {errors.idNumber}
-                      </p>
-                    )}
-                    <p className="text-xs text-muted-foreground">
-                      Entrez le numéro exact tel qu'il apparaît sur votre document
-                    </p>
-                  </div>
-
                   <CountryPhoneSelector 
                     value={phone}
                     onChange={handlePhoneChange}
@@ -667,7 +525,7 @@ export default function RegisterPage() {
                   <div>
                     <p className="text-xs text-muted-foreground">
                       <span className="font-medium">Note :</span> Tous les champs marqués d'un * sont obligatoires. 
-                      Votre compte sera activé après vérification de vos documents.
+                      Vous pourrez compléter votre vérification d'identité après création du compte.
                     </p>
                   </div>
                   <div className="flex flex-col space-y-2">

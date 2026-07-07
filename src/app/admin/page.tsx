@@ -1,7 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { createClient } from "@/lib/supabase"
+import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -16,6 +15,32 @@ import StatCard from "./components/stat-card"
 import DataTable from "./components/data-table"
 import ChartCard from "./components/chart-card"
 
+interface User {
+  id: number
+  name: string
+  email: string
+  status: 'active' | 'pending' | 'inactive'
+  joinDate: string
+  kycStatus: 'verified' | 'pending'
+}
+
+interface KYC {
+  id: number
+  name: string
+  type: string
+  submitted: string
+  status: 'review' | 'pending'
+}
+
+interface Transaction {
+  id: number
+  user: string
+  type: string
+  amount: number
+  status: 'completed' | 'pending' | 'failed'
+  date: string
+}
+
 export default function AdminDashboard() {
   const [stats, setStats] = useState({
     totalUsers: 0,
@@ -26,13 +51,12 @@ export default function AdminDashboard() {
     activeLoans: 0,
     totalRevenue: 0
   })
-  const [recentUsers, setRecentUsers] = useState<any[]>([])
-  const [pendingKYCs, setPendingKYCs] = useState<any[]>([])
-  const [recentTransactions, setRecentTransactions] = useState<any[]>([])
+  const [recentUsers, setRecentUsers] = useState<User[]>([])
+  const [pendingKYCs, setPendingKYCs] = useState<KYC[]>([])
+  const [recentTransactions, setRecentTransactions] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(true)
-  const supabase = createClient()
 
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     setLoading(true)
     
     // Simuler des données pour l'exemple
@@ -56,7 +80,7 @@ export default function AdminDashboard() {
       ])
 
       setPendingKYCs([
-        { id: 1, name: "Abdoulaye Sow", type: "Carte d'identité", submitted: "2024-01-15", status: "review" },
+        { id: 1, name: "Abdoulaye Sow", type: "Carte d&apos;identité", submitted: "2024-01-15", status: "review" },
         { id: 2, name: "Sofia Camara", type: "Passeport", submitted: "2024-01-14", status: "review" },
         { id: 3, name: "David Koné", type: "Permis de conduire", submitted: "2024-01-14", status: "pending" },
         { id: 4, name: "Chantal Bah", type: "Titre de séjour", submitted: "2024-01-13", status: "review" }
@@ -72,11 +96,11 @@ export default function AdminDashboard() {
 
       setLoading(false)
     }, 1000)
-  }
+  }, [])
 
   useEffect(() => {
     fetchDashboardData()
-  }, [])
+  }, [fetchDashboardData])
 
   const getStatusColor = (status: string) => {
     switch(status) {
@@ -100,7 +124,7 @@ export default function AdminDashboard() {
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold text-primary">Tableau de bord Admin</h1>
-            <p className="text-muted-foreground">Vue d'ensemble de l'activité bancaire</p>
+            <p className="text-muted-foreground">Vue d&apos;ensemble de l&apos;activité bancaire</p>
           </div>
           <div className="flex items-center gap-4">
             <div className="relative">

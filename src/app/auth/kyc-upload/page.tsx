@@ -344,12 +344,12 @@ export default function KYCUploadPage() {
               </Button>
 
               <Button 
-                variant="outline" 
+                variant="ghost" 
                 className="w-full"
                 onClick={handleSkip}
                 disabled={uploadStatus === "uploading"}
               >
-                Passer pour l'instant
+                Compléter plus tard - Aller au tableau de bord
               </Button>
             </div>
 

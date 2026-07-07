@@ -18,6 +18,7 @@ export default function DashboardPage() {
   const [user, setUser] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [transactions, setTransactions] = useState<any[]>([])
+  const [kycCompleted, setKycCompleted] = useState(false) // État KYC
   const [stats, setStats] = useState({
     balance: 2450.00,
     monthlyIncome: 3200.00,
@@ -40,6 +41,17 @@ export default function DashboardPage() {
       .select('*')
       .eq('id', session.user.id)
       .single()
+    
+    // Vérifier si le KYC est complété (existence d'un document uploadé)
+    const { data: documents } = await supabase
+      .from('user_documents')
+      .select('*')
+      .eq('user_id', session.user.id)
+      .eq('document_type', 'identity')
+      .eq('status', 'verified')
+      .limit(1)
+    
+    setKycCompleted(documents && documents.length > 0)
     
     setUser({
       ...session.user,
@@ -105,6 +117,37 @@ export default function DashboardPage() {
             </Button>
           </div>
         </div>
+
+        {/* KYC Notification */}
+        {!kycCompleted && (
+          <Card className="bg-amber-500/10 border border-amber-500/20 shadow-sm mb-6">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-amber-500/10 rounded-full flex items-center justify-center">
+                  <Shield className="w-6 h-6 text-amber-500" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-medium text-amber-700 mb-1">Vérification d'identité en attente</h3>
+                  <p className="text-sm text-amber-600/80">
+                    Complétez votre vérification d'identité (KYC) pour débloquer toutes les fonctionnalités de votre compte.
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={() => {}}>
+                    Plus tard
+                  </Button>
+                  <Button 
+                    variant="default" 
+                    size="sm"
+                    onClick={() => router.push('/auth/kyc-upload')}
+                  >
+                    Compléter maintenant
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Balance Overview */}
         <Card className="shadow-sm mb-8">
@@ -380,7 +423,9 @@ export default function DashboardPage() {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-sm">Statut KYC</span>
-                    <Badge variant="success">Vérifié</Badge>
+                    <Badge variant={kycCompleted ? "success" : "warning"}>
+                      {kycCompleted ? "Vérifié" : "En attente"}
+                    </Badge>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-sm">2FA activé</span>
@@ -391,9 +436,17 @@ export default function DashboardPage() {
                     <span className="text-xs text-muted-foreground">Aujourd'hui, 14:30</span>
                   </div>
                 </div>
-                <Button variant="outline" className="w-full mt-4">
+                <Button 
+                  variant="outline" 
+                  className="w-full mt-4"
+                  onClick={() => {
+                    if (!kycCompleted) {
+                      router.push('/auth/kyc-upload')
+                    }
+                  }}
+                >
                   <Shield className="w-4 h-4 mr-2" />
-                  Renforcer la sécurité
+                  {kycCompleted ? "Renforcer la sécurité" : "Compléter le KYC"}
                 </Button>
               </CardContent>
             </Card>

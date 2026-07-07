@@ -1,5 +1,12 @@
 import { createClient } from './supabase'
 
+export interface UserData {
+  first_name?: string
+  last_name?: string
+  phone?: string
+  // Ajoutez d'autres champs au besoin
+}
+
 export async function signIn(email: string, password: string) {
   const supabase = createClient()
   
@@ -11,7 +18,7 @@ export async function signIn(email: string, password: string) {
   return { data, error }
 }
 
-export async function signUp(email: string, password: string, userData: any) {
+export async function signUp(email: string, password: string, userData: UserData) {
   const supabase = createClient()
   
   const { data, error } = await supabase.auth.signUp({
