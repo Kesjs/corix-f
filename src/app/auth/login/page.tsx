@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { AuthHeader } from "@/components/auth/auth-header"
-import { Fingerprint } from "lucide-react"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase"
 import { useRouter } from "next/navigation"
@@ -112,24 +111,7 @@ export default function LoginPage() {
                 {loading ? "Connexion en cours..." : "Se connecter"}
               </Button>
 
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-border" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">Ou</span>
-                </div>
-              </div>
 
-              <Button 
-                variant="outline" 
-                className="w-full" 
-                size="lg"
-                type="button"
-              >
-                <Fingerprint className="w-5 h-5 mr-2" />
-                Connexion biométrique
-              </Button>
 
               <p className="text-center text-sm text-muted-foreground">
                 Pas encore de compte ?{" "}
