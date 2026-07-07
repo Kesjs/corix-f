@@ -10,10 +10,12 @@ import {
   Wallet, Menu, X
 } from "lucide-react"
 import Link from "next/link"
+import { useLanguage } from "@/contexts/language-context"
 
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false)
+  const { t } = useLanguage()
 
   return (
     <div className="min-h-screen bg-background">
@@ -26,35 +28,35 @@ export default function LandingPage() {
             {/* Menu Desktop */}
             <nav className="hidden md:flex items-center gap-8">
               <a href="#hero" className="text-sm font-medium text-foreground hover:text-accent transition-colors">
-                Accueil
+                {t("nav.home")}
               </a>
               <a href="#apropos" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Qui sommes-nous
+                {t("nav.about")}
               </a>
               
               {/* Dropdown Services */}
               <div className="relative group">
                 <button className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
-                  Services bancaires
+                  {t("nav.services")}
                   <ChevronDown className="w-4 h-4" />
                 </button>
                 <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                   <div className="py-2">
                     <a href="#produits" className="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50">
-                      Produits bancaires
+                      {t("nav.products")}
                     </a>
                     <a href="#" className="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50">
-                      Demander un prêt
+                      {t("nav.loans")}
                     </a>
                     <a href="#" className="block px-4 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50">
-                      Épargne & Investissement
+                      {t("nav.savings")}
                     </a>
                   </div>
                 </div>
               </div>
               
               <a href="#support" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Support
+                {t("nav.support")}
               </a>
             </nav>
 
@@ -64,11 +66,11 @@ export default function LandingPage() {
 
               <div className="hidden md:flex items-center gap-3">
                 <Link href="/auth/login">
-                  <Button variant="outline" size="sm">Se connecter</Button>
+                  <Button variant="outline" size="sm">{t("nav.login")}</Button>
                 </Link>
                 <Link href="/auth/register">
                   <Button size="sm" className="bg-accent hover:bg-accent/90">
-                    Ouvrir un compte
+                    {t("nav.register")}
                   </Button>
                 </Link>
               </div>
@@ -92,14 +94,14 @@ export default function LandingPage() {
                   className="text-sm font-medium text-foreground hover:text-accent transition-colors py-2"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Accueil
+                  {t("nav.home")}
                 </a>
                 <a 
                   href="#apropos" 
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Qui sommes-nous
+                  {t("nav.about")}
                 </a>
                 
                 {/* Services dropdown mobile */}
@@ -108,7 +110,7 @@ export default function LandingPage() {
                     className="flex items-center justify-between w-full text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
                     onClick={() => setServicesDropdownOpen(!servicesDropdownOpen)}
                   >
-                    <span>Services bancaires</span>
+                    <span>{t("nav.services")}</span>
                     <ChevronDown className={`w-4 h-4 transition-transform ${servicesDropdownOpen ? 'rotate-180' : ''}`} />
                   </button>
                   {servicesDropdownOpen && (
@@ -118,21 +120,21 @@ export default function LandingPage() {
                         className="block text-sm text-muted-foreground hover:text-foreground py-2"
                         onClick={() => setMobileMenuOpen(false)}
                       >
-                        Produits bancaires
+                        {t("nav.products")}
                       </a>
                       <a 
                         href="#" 
                         className="block text-sm text-muted-foreground hover:text-foreground py-2"
                         onClick={() => setMobileMenuOpen(false)}
                       >
-                        Demander un prêt
+                        {t("nav.loans")}
                       </a>
                       <a 
                         href="#" 
                         className="block text-sm text-muted-foreground hover:text-foreground py-2"
                         onClick={() => setMobileMenuOpen(false)}
                       >
-                        Épargne & Investissement
+                        {t("nav.savings")}
                       </a>
                     </div>
                   )}
@@ -143,15 +145,15 @@ export default function LandingPage() {
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Support
+                  {t("nav.support")}
                 </a>
                 
                 <div className="flex flex-col gap-3 mt-2 pt-4 border-t border-border">
                   <Link href="/auth/login" onClick={() => setMobileMenuOpen(false)}>
-                    <Button variant="outline" className="w-full">Se connecter</Button>
+                    <Button variant="outline" className="w-full">{t("nav.login")}</Button>
                   </Link>
                   <Link href="/auth/register" onClick={() => setMobileMenuOpen(false)}>
-                    <Button className="w-full bg-accent hover:bg-accent/90">Ouvrir un compte</Button>
+                    <Button className="w-full bg-accent hover:bg-accent/90">{t("nav.register")}</Button>
                   </Link>
                 </div>
               </nav>
@@ -170,23 +172,22 @@ export default function LandingPage() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-2xl">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-              Votre argent, simplement, partout
+              {t("hero.title")}
             </h1>
             
             <p className="text-xl text-white/90 mb-10 leading-relaxed">
-              La première banque digitale espagnole qui simplifie votre vie financière. 
-              Compte, carte, épargne et crédit en une seule application.
+              {t("hero.subtitle")}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/auth/register">
                 <Button size="lg" className="bg-accent hover:bg-accent/90 text-white shadow-lg">
-                  Ouvrir un compte gratuitement
+                  {t("hero.register")}
                 </Button>
               </Link>
               <Link href="/auth/login">
                 <Button size="lg" variant="outline" className="bg-white/20 text-white border-white/50 hover:bg-white/30 shadow-sm">
-                  Se connecter à mon compte
+                  {t("hero.login")}
                 </Button>
               </Link>
             </div>
@@ -195,15 +196,15 @@ export default function LandingPage() {
             <div className="mt-16 grid grid-cols-2 md:grid-cols-3 gap-6">
               <div className="text-center">
                 <div className="text-2xl md:text-3xl font-bold text-white mb-1">50K+</div>
-                <div className="text-sm text-white/80">Clients satisfaits</div>
+                <div className="text-sm text-white/80">{t("stats.clients")}</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl md:text-3xl font-bold text-white mb-1">1%</div>
-                <div className="text-sm text-white/80">Frais de transfert</div>
+                <div className="text-sm text-white/80">{t("stats.fees")}</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl md:text-3xl font-bold text-white mb-1">24h/24</div>
-                <div className="text-sm text-white/80">Service disponible</div>
+                <div className="text-sm text-white/80">{t("stats.available")}</div>
               </div>
             </div>
           </div>
@@ -519,20 +520,7 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Smartphone className="w-8 h-8 text-accent" />
-              </div>
-              <h3 className="font-semibold text-foreground text-lg mb-3">Support téléphonique</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                Du lundi au vendredi, 8h-20h
-              </p>
-              <a href="tel:+221338909090" className="text-accent font-medium hover:text-accent/80">
-                +221 33 890 90 90
-              </a>
-            </div>
-
+          <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
             <div className="text-center">
               <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Send className="w-8 h-8 text-accent" />
