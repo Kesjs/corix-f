@@ -165,7 +165,7 @@ export default function LandingPage() {
       {/* Hero Section avec image de fond */}
       <section id="hero" className="pt-32 pb-20 md:pt-40 md:pb-32 relative overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-[url('https://img.magnific.com/photos-gratuite/personne-afro-americaine-remplissant-dossiers-rapport-parlant-receptionniste-au-comptoir-accueil-hopital-femme-ecrivant-formulaire-medical-avant-rendez-vous-controle-medecin-au-centre-sante_482257-50673.jpg?semt=ais_hybrid&w=740&q=80')] bg-cover bg-center" />
+          <div className="absolute inset-0 bg-[url('/banque.jpeg')] bg-cover bg-center" />
           <div className="absolute inset-0 bg-gradient-to-r from-primary/85 via-primary/60 to-transparent" />
         </div>
         
