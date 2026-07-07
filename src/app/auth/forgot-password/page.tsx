@@ -27,7 +27,8 @@ export default function ForgotPasswordPage() {
       })
 
       if (error) {
-        setError(error.message)
+        const errorMessage = getFrenchErrorMessage(error.message)
+        setError(errorMessage)
       } else {
         setSuccess(true)
       }
@@ -36,6 +37,18 @@ export default function ForgotPasswordPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  // Fonction pour traduire les messages d'erreur Supabase
+  const getFrenchErrorMessage = (message: string): string => {
+    if (message.includes("Invalid email")) {
+      return "Format d'email invalide"
+    }
+    if (message.includes("User not found")) {
+      return "Aucun compte trouvé avec cet email"
+    }
+    // Message par défaut
+    return "Une erreur s'est produite lors de la réinitialisation"
   }
 
   return (

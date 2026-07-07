@@ -312,6 +312,24 @@ export default function RegisterPage() {
     setErrors(newErrors)
   }
 
+  // Fonction pour traduire les messages d'erreur Supabase
+  const getFrenchErrorMessage = (message: string): string => {
+    if (message.includes("User already registered")) {
+      return "Un compte existe déjà avec cet email"
+    }
+    if (message.includes("Invalid email")) {
+      return "Format d'email invalide"
+    }
+    if (message.includes("Password")) {
+      return "Le mot de passe doit contenir au moins 8 caractères"
+    }
+    if (message.includes("weak password")) {
+      return "Le mot de passe est trop faible"
+    }
+    // Message par défaut
+    return "Une erreur s'est produite lors de l'inscription"
+  }
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -387,7 +405,8 @@ export default function RegisterPage() {
       })
 
       if (signUpError) {
-        setErrors({ ...errors, general: signUpError.message })
+        const errorMessage = getFrenchErrorMessage(signUpError.message)
+        setErrors({ ...errors, general: errorMessage })
         return
       }
 
@@ -447,8 +466,8 @@ export default function RegisterPage() {
           console.warn('Erreur non bloquante lors de la création du profil:', profileError)
         }
         
-        // Redirection vers la page de vérification (l'upload continue en arrière-plan)
-        router.push("/auth/pending")
+        // Redirection directe vers le dashboard (email verification désactivée)
+        router.push("/dashboard")
       } else {
         setErrors({ ...errors, general: "Compte créé mais utilisateur non disponible" })
       }

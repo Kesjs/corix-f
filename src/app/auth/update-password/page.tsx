@@ -47,7 +47,8 @@ export default function UpdatePasswordPage() {
       })
 
       if (error) {
-        setError(error.message)
+        const errorMessage = getFrenchErrorMessage(error.message)
+        setError(errorMessage)
       } else {
         setSuccess(true)
         setTimeout(() => {
@@ -59,6 +60,18 @@ export default function UpdatePasswordPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  // Fonction pour traduire les messages d'erreur Supabase
+  const getFrenchErrorMessage = (message: string): string => {
+    if (message.includes("Password")) {
+      return "Le mot de passe doit contenir au moins 8 caractères"
+    }
+    if (message.includes("weak password")) {
+      return "Le mot de passe est trop faible"
+    }
+    // Message par défaut
+    return "Une erreur s'est produite lors de la mise à jour"
   }
 
   return (

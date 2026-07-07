@@ -31,7 +31,9 @@ export default function LoginPage() {
       })
 
       if (error) {
-        setError(error.message)
+        // Traduction des erreurs Supabase en français
+        const errorMessage = getFrenchErrorMessage(error.message)
+        setError(errorMessage)
       } else {
         // La redirection est gérée par l'AuthProvider
         router.push("/dashboard")
@@ -41,6 +43,27 @@ export default function LoginPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  // Fonction pour traduire les messages d'erreur Supabase
+  const getFrenchErrorMessage = (message: string): string => {
+    if (message.includes("Invalid login credentials")) {
+      return "Email ou mot de passe incorrect"
+    }
+    if (message.includes("Email not confirmed")) {
+      return "Veuillez confirmer votre email avant de vous connecter"
+    }
+    if (message.includes("Invalid email")) {
+      return "Format d'email invalide"
+    }
+    if (message.includes("User not found")) {
+      return "Aucun compte trouvé avec cet email"
+    }
+    if (message.includes("Password")) {
+      return "Mot de passe incorrect"
+    }
+    // Message par défaut
+    return "Une erreur s'est produite lors de la connexion"
   }
 
   return (
