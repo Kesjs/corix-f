@@ -102,8 +102,39 @@ export default function PrivacyPage() {
               <section className="space-y-4">
                 <h2 className="text-xl font-semibold text-foreground">7. Cookies</h2>
                 <p className="text-muted-foreground">
-                  Nous utilisons des cookies pour améliorer votre expérience utilisateur et assurer la sécurité de votre session.
-                  Vous pouvez configurer votre navigateur pour refuser les cookies, mais cela pourrait affecter certaines fonctionnalités.
+                  Nous utilisons différents types de cookies pour assurer le bon fonctionnement de notre site et améliorer votre expérience utilisateur.
+                </p>
+                
+                <div className="bg-muted/30 p-4 rounded-lg">
+                  <h3 className="text-lg font-medium text-foreground mb-2">Types de cookies utilisés :</h3>
+                  <ul className="list-disc pl-5 space-y-2 text-muted-foreground">
+                    <li>
+                      <strong>Cookies essentiels :</strong> Nécessaires au fonctionnement du site (authentification, sécurité, préférences de session)
+                    </li>
+                    <li>
+                      <strong>Cookies analytiques :</strong> Nous aident à comprendre comment vous utilisez notre site pour l&apos;améliorer
+                    </li>
+                    <li>
+                      <strong>Cookies de préférences :</strong> Mémorisent vos choix (langue, paramètres d'affichage)
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="bg-muted/30 p-4 rounded-lg">
+                  <h3 className="text-lg font-medium text-foreground mb-2">Gestion des cookies :</h3>
+                  <p className="text-muted-foreground">
+                    À votre première visite, vous serez invité à accepter ou refuser l&apos;utilisation des cookies non-essentiels via notre bannière de consentement. Vous pouvez à tout moment :
+                  </p>
+                  <ul className="list-disc pl-5 space-y-2 text-muted-foreground mt-2">
+                    <li>Modifier vos préférences en supprimant les cookies depuis les paramètres de votre navigateur</li>
+                    <li>Refuser les cookies analytiques via notre bannière de consentement</li>
+                    <li>Consulter les cookies actifs dans les outils de développement de votre navigateur</li>
+                  </ul>
+                </div>
+
+                <p className="text-muted-foreground">
+                  Les cookies essentiels ne peuvent pas être désactivés car ils sont nécessaires au fonctionnement sécurisé de notre application bancaire.
+                  Vous pouvez configurer votre navigateur pour refuser les autres cookies, mais cela pourrait affecter certaines fonctionnalités.
                 </p>
               </section>
 
