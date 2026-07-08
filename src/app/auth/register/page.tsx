@@ -102,16 +102,19 @@ export default function RegisterPage() {
   }
 
   const validatePhone = (value: string, country: Country | null): string | undefined => {
-    if (!value.trim()) return "Le numéro de téléphone est requis"
-    if (!country) return "Le pays est requis"
+    if (!value.trim()) return t("validation.phoneRequired")
+    if (!country) return t("validation.phoneCountryRequired")
+    
+    // Extraire la partie numérique sans le code pays et les espaces
+    const cleanValue = value.replace(/\s/g, '').replace(country.phoneCode, '')
     
     const regex = new RegExp(country.phonePattern)
-    if (!regex.test(value)) {
-      return `Format invalide. Exemple: ${country.example}`
+    if (!regex.test(cleanValue)) {
+      return t("validation.phoneFormat", { example: country.example })
     }
     
-    if (value.length < country.phoneLength) {
-      return `Le numéro doit contenir ${country.phoneLength} chiffres`
+    if (cleanValue.length < country.phoneLength) {
+      return t("validation.phoneLength", { count: country.phoneLength })
     }
     
     return undefined

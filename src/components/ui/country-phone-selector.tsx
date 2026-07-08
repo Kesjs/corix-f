@@ -4,6 +4,7 @@ import { useState } from "react"
 import { ChevronDown } from "lucide-react"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
+import { useLanguage } from "@/contexts/language-context"
 
 type Country = {
   code: string
@@ -21,7 +22,7 @@ const countries: Country[] = [
     name: "Espagne",
     flag: "/esp.png",
     phoneCode: "+34",
-    phonePattern: "^\\+34[0-9]{9}$",
+    phonePattern: "^[0-9]{9}$",
     phoneLength: 9,
     example: "+34 612 345 678"
   },
@@ -30,16 +31,16 @@ const countries: Country[] = [
     name: "France",
     flag: "/fr.png",
     phoneCode: "+33",
-    phonePattern: "^\\+33[0-9]{9}$",
+    phonePattern: "^[0-9]{9}$",
     phoneLength: 9,
-    example: "+33 612 345 678"
+    example: "+33 6 12 34 56 78"
   },
   {
     code: "us",
     name: "États-Unis",
     flag: "/usa.png",
     phoneCode: "+1",
-    phonePattern: "^\\+1[0-9]{10}$",
+    phonePattern: "^[0-9]{10}$",
     phoneLength: 10,
     example: "+1 202 555 0145"
   }
@@ -55,45 +56,38 @@ export function CountryPhoneSelector({ value, onChange, error }: CountryPhoneSel
   const [selectedCountry, setSelectedCountry] = useState<Country>(countries[0]) // Espagne par défaut
   const [isOpen, setIsOpen] = useState(false)
   const [localValue, setLocalValue] = useState("")
+  const { t } = useLanguage()
 
   const handleCountrySelect = (country: Country) => {
     setSelectedCountry(country)
     setIsOpen(false)
     
-    // Mettre à jour la valeur avec le code du pays
-    const phoneWithoutCode = localValue.replace(/^\+\d+\s*/, "")
-    const newValue = country.phoneCode + phoneWithoutCode
-    setLocalValue(newValue)
-    onChange(newValue, country)
+    // Garder seulement la partie numérique (sans indicatif)
+    const numberOnly = localValue.replace(/^\+\d+\s*/, '')
+    setLocalValue(numberOnly)
+    onChange(country.phoneCode + numberOnly, country)
   }
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value
     
-    // Nettoyer l'entrée
-    let cleanValue = inputValue.replace(/[^\d+]/g, '')
-    
-    // S'assurer que ça commence par le code du pays sélectionné
-    if (!cleanValue.startsWith(selectedCountry.phoneCode)) {
-      cleanValue = selectedCountry.phoneCode + cleanValue.replace(/^\+\d+/, '')
-    }
+    // Nettoyer l'entrée (garder seulement les chiffres)
+    let cleanValue = inputValue.replace(/[^\d]/g, '')
     
     // Limiter la longueur
-    const maxLength = selectedCountry.phoneCode.length + selectedCountry.phoneLength
-    if (cleanValue.length > maxLength) {
-      cleanValue = cleanValue.substring(0, maxLength)
+    if (cleanValue.length > selectedCountry.phoneLength) {
+      cleanValue = cleanValue.substring(0, selectedCountry.phoneLength)
     }
     
-    // Formater pour l'affichage
+    // Formater pour l'affichage (avec espaces)
     let formattedValue = cleanValue
-    if (cleanValue.length > selectedCountry.phoneCode.length) {
-      const code = cleanValue.substring(0, selectedCountry.phoneCode.length)
-      const number = cleanValue.substring(selectedCountry.phoneCode.length)
-      formattedValue = `${code} ${number.match(/.{1,3}/g)?.join(' ') || number}`
+    if (cleanValue.length > 0) {
+      formattedValue = cleanValue.match(/.{1,3}/g)?.join(' ') || cleanValue
     }
     
     setLocalValue(formattedValue)
-    onChange(cleanValue, selectedCountry)
+    // Envoyer le numéro complet avec l'indicatif au parent
+    onChange(selectedCountry.phoneCode + cleanValue, selectedCountry)
   }
 
   const validatePhone = (phone: string, country: Country): boolean => {
@@ -101,44 +95,11 @@ export function CountryPhoneSelector({ value, onChange, error }: CountryPhoneSel
     return regex.test(phone)
   }
 
-  const isPhoneComplete = (phone: string, country: Country): boolean => {
-    if (!phone || phone === country.phoneCode) return false
-    const numberPart = phone.substring(country.phoneCode.length)
-    return numberPart.length === country.phoneLength
-  }
-
-  const getPhoneError = (phone: string, country: Country): string | null => {
-    if (!phone || phone === country.phoneCode) return null
-    
-    if (!phone.startsWith(country.phoneCode)) {
-      return `Le numéro doit commencer par ${country.phoneCode}`
-    }
-    
-    const numberPart = phone.substring(country.phoneCode.length)
-    const expectedLength = country.phoneLength
-    
-    // Si l'utilisateur a commencé à saisir mais n'a pas terminé
-    if (numberPart.length > 0 && numberPart.length < expectedLength) {
-      return `Il manque ${expectedLength - numberPart.length} chiffre(s)`
-    }
-    
-    if (numberPart.length > expectedLength) {
-      return `Trop de chiffres (${expectedLength} attendus)`
-    }
-    
-    if (!validatePhone(phone, country)) {
-      return `Format invalide. Exemple: ${country.example}`
-    }
-    
-    return null
-  }
-
   const cleanPhone = localValue.replace(/\s/g, '')
-  const currentError = getPhoneError(cleanPhone, selectedCountry)
 
   return (
     <div className="space-y-2">
-      <label className="text-sm font-medium text-foreground">Numéro de téléphone</label>
+      <label className="text-sm font-medium text-foreground">{t("placeholder.phone") || "Numéro de téléphone"}</label>
       
       <div className="relative">
         <div className="flex gap-2">
@@ -198,39 +159,21 @@ export function CountryPhoneSelector({ value, onChange, error }: CountryPhoneSel
           </div>
 
           {/* Champ téléphone */}
-          <div className="flex-1 relative">
+          <div className="flex-1">
             <input
               type="tel"
               value={localValue}
               onChange={handlePhoneChange}
-              placeholder={selectedCountry.example}
+              placeholder="612 345 678"
               className={cn(
                 "w-full px-3 py-2 rounded-lg border transition-colors",
                 "focus:outline-none focus:ring-2 focus:ring-accent/50",
-                (error || (currentError && cleanPhone !== selectedCountry.phoneCode))
+                error
                   ? "border-destructive focus:border-destructive"
                   : "border-border focus:border-accent"
               )}
             />
-            {currentError && cleanPhone !== selectedCountry.phoneCode && (
-              <div className="absolute -bottom-6 left-0 text-xs text-destructive">
-                {currentError}
-              </div>
-            )}
           </div>
-        </div>
-      </div>
-
-      {/* Guide de format */}
-      <div className="flex items-center justify-between text-xs text-muted-foreground">
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-success/10 rounded-full flex items-center justify-center">
-            <div className="w-1.5 h-1.5 bg-success rounded-full"></div>
-          </div>
-          <span>Exemple: {selectedCountry.example}</span>
-        </div>
-        <div className="text-muted-foreground/70">
-          {selectedCountry.phoneLength} chiffres après {selectedCountry.phoneCode}
         </div>
       </div>
 

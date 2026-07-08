@@ -7,7 +7,7 @@ type Language = "fr" | "es" | "en"
 interface LanguageContextType {
   language: Language
   setLanguage: (lang: Language) => void
-  t: (key: string) => string
+  t: (key: string, params?: Record<string, string | number>) => string
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
@@ -149,6 +149,9 @@ const translations: Record<Language, Record<string, string>> = {
     "validation.confirmPasswordMismatch": "Les mots de passe ne correspondent pas",
     "validation.phoneRequired": "Le numéro de téléphone est requis",
     "validation.phoneInvalid": "Numéro de téléphone invalide",
+    "validation.phoneCountryRequired": "Le pays est requis",
+    "validation.phoneLength": "Le numéro doit contenir {{count}} chiffres",
+    "validation.phoneFormat": "Format invalide. Exemple: {{example}}",
     "validation.termsRequired": "Vous devez accepter les conditions générales",
     
     // 404 page
@@ -161,6 +164,7 @@ const translations: Record<Language, Record<string, string>> = {
     "placeholder.firstName": "Votre prénom",
     "placeholder.lastName": "Votre nom",
     "placeholder.email": "votre@email.com",
+    "placeholder.phone": "Numéro de téléphone",
     "placeholder.subject": "Objet de votre message",
     "placeholder.message": "Votre message...",
     "placeholder.typeMessage": "Tapez votre message...",
@@ -312,6 +316,9 @@ const translations: Record<Language, Record<string, string>> = {
     "validation.confirmPasswordMismatch": "Las contraseñas no coinciden",
     "validation.phoneRequired": "El número de teléfono es requerido",
     "validation.phoneInvalid": "Número de teléfono inválido",
+    "validation.phoneCountryRequired": "El país es requerido",
+    "validation.phoneLength": "El número debe contener {{count}} dígitos",
+    "validation.phoneFormat": "Formato inválido. Ejemplo: {{example}}",
     "validation.termsRequired": "Debe aceptar los términos y condiciones",
     
     // 404 page
@@ -324,6 +331,7 @@ const translations: Record<Language, Record<string, string>> = {
     "placeholder.firstName": "Tu nombre",
     "placeholder.lastName": "Tu apellido",
     "placeholder.email": "tu@email.com",
+    "placeholder.phone": "Número de teléfono",
     "placeholder.subject": "Asunto de tu mensaje",
     "placeholder.message": "Tu mensaje...",
     "placeholder.typeMessage": "Escribe tu mensaje...",
@@ -475,6 +483,9 @@ const translations: Record<Language, Record<string, string>> = {
     "validation.confirmPasswordMismatch": "Passwords do not match",
     "validation.phoneRequired": "Phone number is required",
     "validation.phoneInvalid": "Invalid phone number",
+    "validation.phoneCountryRequired": "Country is required",
+    "validation.phoneLength": "The number must contain {{count}} digits",
+    "validation.phoneFormat": "Invalid format. Example: {{example}}",
     "validation.termsRequired": "You must accept the terms and conditions",
     
     // 404 page
@@ -487,6 +498,7 @@ const translations: Record<Language, Record<string, string>> = {
     "placeholder.firstName": "Your first name",
     "placeholder.lastName": "Your last name",
     "placeholder.email": "your@email.com",
+    "placeholder.phone": "Phone number",
     "placeholder.subject": "Subject of your message",
     "placeholder.message": "Your message...",
     "placeholder.typeMessage": "Type your message...",
@@ -526,8 +538,17 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   }, [language])
 
   // Fonction de traduction
-  const t = (key: string): string => {
-    return translations[language][key] || key
+  const t = (key: string, params?: Record<string, string | number>): string => {
+    let translation = translations[language][key] || key
+    
+    // Remplacer les paramètres dans la traduction
+    if (params) {
+      Object.keys(params).forEach(param => {
+        translation = translation.replace(new RegExp(`{{${param}}}`, 'g'), String(params[param]))
+      })
+    }
+    
+    return translation
   }
 
   return (
