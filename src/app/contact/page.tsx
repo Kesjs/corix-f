@@ -1,10 +1,15 @@
+"use client"
+
 import { AuthHeader } from "@/components/auth/auth-header"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Mail, Phone, MapPin, Clock } from "lucide-react"
+import { useLanguage } from "@/contexts/language-context"
 
 export default function ContactPage() {
+  const { t } = useLanguage()
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <AuthHeader />
@@ -33,29 +38,29 @@ export default function ContactPage() {
                     <div className="grid md:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <label className="text-sm font-medium text-foreground">Prénom</label>
-                        <Input placeholder="Votre prénom" />
+                        <Input placeholder={t("placeholder.firstName")} />
                       </div>
                       <div className="space-y-2">
                         <label className="text-sm font-medium text-foreground">Nom</label>
-                        <Input placeholder="Votre nom" />
+                        <Input placeholder={t("placeholder.lastName")} />
                       </div>
                     </div>
 
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-foreground">Email</label>
-                      <Input type="email" placeholder="votre@email.com" />
+                      <Input type="email" placeholder={t("placeholder.email")} />
                     </div>
 
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-foreground">Sujet</label>
-                      <Input placeholder="Objet de votre message" />
+                      <Input placeholder={t("placeholder.subject")} />
                     </div>
 
                     <div className="space-y-2">
                       <label className="text-sm font-medium text-foreground">Message</label>
                       <textarea 
                         className="w-full px-3 py-2 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent min-h-[150px]"
-                        placeholder="Votre message..."
+                        placeholder={t("placeholder.message")}
                       />
                     </div>
 

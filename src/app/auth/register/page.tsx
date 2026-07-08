@@ -317,7 +317,7 @@ export default function RegisterPage() {
                       Nom *
                     </label>
                     <Input 
-                      placeholder="Entrez votre nom de famille" 
+                      placeholder={t("placeholder.enterLastName")}
                       value={lastName}
                       onChange={(e) => {
                         setLastName(e.target.value)
@@ -342,7 +342,7 @@ export default function RegisterPage() {
                       Prénom *
                     </label>
                     <Input 
-                      placeholder="Entrez votre prénom" 
+                      placeholder={t("placeholder.enterFirstName")}
                       value={firstName}
                       onChange={(e) => {
                         setFirstName(e.target.value)
@@ -367,7 +367,7 @@ export default function RegisterPage() {
                       Ville *
                     </label>
                     <Input 
-                      placeholder="Entrez votre ville" 
+                      placeholder={t("placeholder.enterCity")}
                       value={city}
                       onChange={(e) => {
                         setCity(e.target.value)
@@ -392,7 +392,7 @@ export default function RegisterPage() {
                       Profession
                     </label>
                     <Input 
-                      placeholder="Ex: Ingénieur, Enseignant, Commerçant..." 
+                      placeholder={t("placeholder.profession")}
                       value={profession}
                       onChange={(e) => {
                         setProfession(e.target.value)
@@ -417,7 +417,7 @@ export default function RegisterPage() {
                     </label>
                     <Input 
                       type="email" 
-                      placeholder="votre@email.com" 
+                      placeholder={t("placeholder.email")}
                       value={email}
                       onChange={(e) => {
                         setEmail(e.target.value)
@@ -455,7 +455,7 @@ export default function RegisterPage() {
                     <div className="relative">
                       <Input 
                         type={showPassword ? "text" : "password"}
-                        placeholder="Créez un mot de passe" 
+                        placeholder={t("placeholder.createPassword")} 
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
@@ -479,7 +479,7 @@ export default function RegisterPage() {
                     <div className="relative">
                       <Input 
                         type={showConfirmPassword ? "text" : "password"}
-                        placeholder="Confirmez votre mot de passe" 
+                        placeholder={t("placeholder.confirmPassword")} 
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         required

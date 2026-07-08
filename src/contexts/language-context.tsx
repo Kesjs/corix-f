@@ -150,6 +150,32 @@ const translations: Record<Language, Record<string, string>> = {
     "validation.phoneRequired": "Le numéro de téléphone est requis",
     "validation.phoneInvalid": "Numéro de téléphone invalide",
     "validation.termsRequired": "Vous devez accepter les conditions générales",
+    
+    // 404 page
+    "notFound.title": "Page non trouvée",
+    "notFound.subtitle": "Désolé, la page que vous recherchez n'existe pas ou a été déplacée.",
+    "notFound.backHome": "Retour à l'accueil",
+    "notFound.contactSupport": "Contacter le support",
+    
+    // Placeholders
+    "placeholder.firstName": "Votre prénom",
+    "placeholder.lastName": "Votre nom",
+    "placeholder.email": "votre@email.com",
+    "placeholder.subject": "Objet de votre message",
+    "placeholder.message": "Votre message...",
+    "placeholder.typeMessage": "Tapez votre message...",
+    "placeholder.briefProblem": "Décrivez brièvement votre problème",
+    "placeholder.detailProblem": "Décrivez votre problème en détail...",
+    "placeholder.searchContact": "Rechercher un contact...",
+    "placeholder.amount": "0,00",
+    "placeholder.enterEmail": "Entrez votre email",
+    "placeholder.enterLastName": "Entrez votre nom de famille",
+    "placeholder.enterFirstName": "Entrez votre prénom",
+    "placeholder.enterCity": "Entrez votre ville",
+    "placeholder.profession": "Ex: Ingénieur, Enseignant, Commerçant...",
+    "placeholder.createPassword": "Créez un mot de passe",
+    "placeholder.confirmPassword": "Confirmez votre mot de passe",
+    "placeholder.enterPassword": "Entrez votre mot de passe",
   },
   es: {
     // Navigation
@@ -287,6 +313,32 @@ const translations: Record<Language, Record<string, string>> = {
     "validation.phoneRequired": "El número de teléfono es requerido",
     "validation.phoneInvalid": "Número de teléfono inválido",
     "validation.termsRequired": "Debe aceptar los términos y condiciones",
+    
+    // 404 page
+    "notFound.title": "Página no encontrada",
+    "notFound.subtitle": "Lo sentimos, la página que busca no existe o ha sido movida.",
+    "notFound.backHome": "Volver al inicio",
+    "notFound.contactSupport": "Contactar soporte",
+    
+    // Placeholders
+    "placeholder.firstName": "Tu nombre",
+    "placeholder.lastName": "Tu apellido",
+    "placeholder.email": "tu@email.com",
+    "placeholder.subject": "Asunto de tu mensaje",
+    "placeholder.message": "Tu mensaje...",
+    "placeholder.typeMessage": "Escribe tu mensaje...",
+    "placeholder.briefProblem": "Describe brevemente tu problema",
+    "placeholder.detailProblem": "Describe tu problema en detalle...",
+    "placeholder.searchContact": "Buscar contacto...",
+    "placeholder.amount": "0,00",
+    "placeholder.enterEmail": "Introduce tu email",
+    "placeholder.enterLastName": "Introduce tu apellido",
+    "placeholder.enterFirstName": "Introduce tu nombre",
+    "placeholder.enterCity": "Introduce tu ciudad",
+    "placeholder.profession": "Ej: Ingeniero, Profesor, Comerciante...",
+    "placeholder.createPassword": "Crea una contraseña",
+    "placeholder.confirmPassword": "Confirma tu contraseña",
+    "placeholder.enterPassword": "Introduce tu contraseña",
   },
   en: {
     // Navigation
@@ -424,6 +476,32 @@ const translations: Record<Language, Record<string, string>> = {
     "validation.phoneRequired": "Phone number is required",
     "validation.phoneInvalid": "Invalid phone number",
     "validation.termsRequired": "You must accept the terms and conditions",
+    
+    // 404 page
+    "notFound.title": "Page not found",
+    "notFound.subtitle": "Sorry, the page you are looking for does not exist or has been moved.",
+    "notFound.backHome": "Back to home",
+    "notFound.contactSupport": "Contact support",
+    
+    // Placeholders
+    "placeholder.firstName": "Your first name",
+    "placeholder.lastName": "Your last name",
+    "placeholder.email": "your@email.com",
+    "placeholder.subject": "Subject of your message",
+    "placeholder.message": "Your message...",
+    "placeholder.typeMessage": "Type your message...",
+    "placeholder.briefProblem": "Briefly describe your problem",
+    "placeholder.detailProblem": "Describe your problem in detail...",
+    "placeholder.searchContact": "Search contact...",
+    "placeholder.amount": "0.00",
+    "placeholder.enterEmail": "Enter your email",
+    "placeholder.enterLastName": "Enter your last name",
+    "placeholder.enterFirstName": "Enter your first name",
+    "placeholder.enterCity": "Enter your city",
+    "placeholder.profession": "Ex: Engineer, Teacher, Merchant...",
+    "placeholder.createPassword": "Create a password",
+    "placeholder.confirmPassword": "Confirm your password",
+    "placeholder.enterPassword": "Enter your password",
   }
 }
 

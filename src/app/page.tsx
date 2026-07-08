@@ -269,13 +269,10 @@ export default function LandingPage() {
             {/* Statistiques rapides */}
             <div className="mt-16 grid grid-cols-2 md:grid-cols-3 gap-6">
               <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-white mb-1">50K+</div>
+                <div className="text-2xl md:text-3xl font-bold text-white mb-1">37K+</div>
                 <div className="text-sm text-white/80">{t("stats.clients")}</div>
               </div>
-              <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-white mb-1">1%</div>
-                <div className="text-sm text-white/80">{t("stats.fees")}</div>
-              </div>
+             
               <div className="text-center">
                 <div className="text-2xl md:text-3xl font-bold text-white mb-1">24h/24</div>
                 <div className="text-sm text-white/80">{t("stats.available")}</div>

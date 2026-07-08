@@ -9,6 +9,7 @@ import Link from "next/link"
 import { createClient } from "@/lib/supabase"
 import { useRouter } from "next/navigation"
 import { Eye, EyeOff } from "lucide-react"
+import { useLanguage } from "@/contexts/language-context"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -18,6 +19,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
   const supabase = createClient()
+  const { t } = useLanguage()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -92,7 +94,7 @@ export default function LoginPage() {
                 <label className="text-sm font-medium text-foreground">Email</label>
                 <Input 
                   type="email" 
-                  placeholder="Entrez votre email" 
+                  placeholder={t("placeholder.enterEmail")}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -104,7 +106,7 @@ export default function LoginPage() {
                 <div className="relative">
                   <Input 
                     type={showPassword ? "text" : "password"}
-                    placeholder="Entrez votre mot de passe" 
+                    placeholder={t("placeholder.enterPassword")}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required

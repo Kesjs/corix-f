@@ -11,6 +11,7 @@ import {
 } from "lucide-react"
 import UserSidebar from "../components/sidebar"
 import { useRouter } from "next/navigation"
+import { useLanguage } from "@/contexts/language-context"
 
 interface Message {
   id: number
@@ -44,6 +45,7 @@ export default function SupportPage() {
   const [isMobile, setIsMobile] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
+  const { t } = useLanguage()
 
   useEffect(() => {
     const checkMobile = () => {
@@ -226,6 +228,7 @@ export default function SupportPage() {
                 setNewMessage={setNewMessage}
                 handleSendMessage={handleSendMessage}
                 messagesEndRef={messagesEndRef}
+                t={t}
               />
             ) : showNewTicket ? (
               <MobileNewTicket
@@ -235,6 +238,7 @@ export default function SupportPage() {
                 setContent={setNewTicketContent}
                 onCreate={createNewTicket}
                 onCancel={() => setShowNewTicket(false)}
+                t={t}
               />
             ) : (
               <MobileTicketList 
@@ -324,6 +328,7 @@ export default function SupportPage() {
                 setNewMessage={setNewMessage}
                 handleSendMessage={handleSendMessage}
                 messagesEndRef={messagesEndRef}
+                t={t}
               />
             ) : showNewTicket ? (
               <DesktopNewTicket
@@ -333,6 +338,7 @@ export default function SupportPage() {
                 setContent={setNewTicketContent}
                 onCreate={createNewTicket}
                 onCancel={() => setShowNewTicket(false)}
+                t={t}
               />
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-center p-8">
@@ -394,7 +400,7 @@ function MobileTicketList({ tickets, onSelectTicket, getStatusColor, getPriority
   )
 }
 
-function MobileChat({ messages, newMessage, setNewMessage, handleSendMessage, messagesEndRef }: any) {
+function MobileChat({ messages, newMessage, setNewMessage, handleSendMessage, messagesEndRef, t }: any) {
   return (
     <>
       <div className="space-y-4 mb-4 max-h-[calc(100vh-200px)] overflow-y-auto">
@@ -436,7 +442,7 @@ function MobileChat({ messages, newMessage, setNewMessage, handleSendMessage, me
             type="text"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            placeholder="Tapez votre message..."
+            placeholder={t("placeholder.typeMessage")}
             className="flex-1 px-4 py-2 border border-input rounded-lg bg-background"
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
           />
@@ -449,7 +455,7 @@ function MobileChat({ messages, newMessage, setNewMessage, handleSendMessage, me
   )
 }
 
-function MobileNewTicket({ subject, content, setSubject, setContent, onCreate, onCancel }: any) {
+function MobileNewTicket({ subject, content, setSubject, setContent, onCreate, onCancel, t }: any) {
   return (
     <div className="space-y-4">
       <div>
@@ -458,7 +464,7 @@ function MobileNewTicket({ subject, content, setSubject, setContent, onCreate, o
           type="text"
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
-          placeholder="Décrivez brièvement votre problème"
+          placeholder={t("placeholder.briefProblem")}
           className="w-full px-4 py-2 border border-input rounded-lg bg-background"
         />
       </div>
@@ -467,7 +473,7 @@ function MobileNewTicket({ subject, content, setSubject, setContent, onCreate, o
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          placeholder="Décrivez votre problème en détail..."
+          placeholder={t("placeholder.detailProblem")}
           rows={6}
           className="w-full px-4 py-2 border border-input rounded-lg bg-background"
         />
@@ -485,7 +491,7 @@ function MobileNewTicket({ subject, content, setSubject, setContent, onCreate, o
 }
 
 // Composants desktop
-function DesktopChat({ ticket, messages, newMessage, setNewMessage, handleSendMessage, messagesEndRef }: any) {
+function DesktopChat({ ticket, messages, newMessage, setNewMessage, handleSendMessage, messagesEndRef, t }: any) {
   return (
     <>
       <CardHeader className="border-b border-border">
@@ -550,7 +556,7 @@ function DesktopChat({ ticket, messages, newMessage, setNewMessage, handleSendMe
               type="text"
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Tapez votre message..."
+              placeholder={t("placeholder.typeMessage")}
               className="flex-1 px-4 py-2 border border-input rounded-lg bg-background"
               onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
             />
@@ -564,7 +570,7 @@ function DesktopChat({ ticket, messages, newMessage, setNewMessage, handleSendMe
   )
 }
 
-function DesktopNewTicket({ subject, content, setSubject, setContent, onCreate, onCancel }: any) {
+function DesktopNewTicket({ subject, content, setSubject, setContent, onCreate, onCancel, t }: any) {
   return (
     <>
       <CardHeader>
@@ -577,7 +583,7 @@ function DesktopNewTicket({ subject, content, setSubject, setContent, onCreate, 
             type="text"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
-            placeholder="Décrivez brièvement votre problème"
+            placeholder={t("placeholder.briefProblem")}
             className="w-full px-4 py-2 border border-input rounded-lg bg-background"
           />
         </div>
@@ -586,7 +592,7 @@ function DesktopNewTicket({ subject, content, setSubject, setContent, onCreate, 
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder="Décrivez votre problème en détail..."
+            placeholder={t("placeholder.detailProblem")}
             rows={10}
             className="w-full px-4 py-2 border border-input rounded-lg bg-background"
           />

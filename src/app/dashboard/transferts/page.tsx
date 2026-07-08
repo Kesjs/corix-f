@@ -6,10 +6,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Navigation } from "@/components/ui/navigation"
 import { Search, Plus, User, QrCode, Building2 } from "lucide-react"
 import { useState } from "react"
+import { useLanguage } from "@/contexts/language-context"
 
 export default function TransfertsPage() {
   const [amount, setAmount] = useState("")
   const [selectedContact, setSelectedContact] = useState<number | null>(null)
+  const { t } = useLanguage()
 
   const recentContacts = [
     { id: 1, name: "Kossi A.", phone: "+221 77 123 45 67", avatar: "K" },
@@ -33,7 +35,7 @@ export default function TransfertsPage() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
             <Input
-              placeholder="Rechercher un contact..."
+              placeholder={t("placeholder.searchContact")}
               className="pl-10"
             />
           </div>
@@ -112,7 +114,7 @@ export default function TransfertsPage() {
                   <label className="text-sm font-medium text-foreground">Montant (€)</label>
                   <Input
                     type="number"
-                    placeholder="0,00"
+                    placeholder={t("placeholder.amount")}
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     className="text-2xl font-bold text-center h-16"

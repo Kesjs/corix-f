@@ -8,6 +8,7 @@ import { Logo } from "@/components/ui/logo"
 import { LanguageSelector } from "@/components/ui/language-selector"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase"
+import { useLanguage } from "@/contexts/language-context"
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("")
@@ -15,6 +16,7 @@ export default function ForgotPasswordPage() {
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const supabase = createClient()
+  const { t } = useLanguage()
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -93,7 +95,7 @@ export default function ForgotPasswordPage() {
                   <label className="text-sm font-medium text-foreground">Email</label>
                   <Input 
                     type="email" 
-                    placeholder="Entrez votre email" 
+                    placeholder={t("placeholder.enterEmail")} 
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
