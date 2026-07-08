@@ -107,14 +107,14 @@ export default function RegisterPage() {
     if (!country) return t("validation.phoneCountryRequired")
     
     // Extraire la partie numérique sans le code pays et les espaces
-    const cleanValue = value.replace(/\s/g, '').replace(/^\+?\d+/, '')
+    const cleanValue = value.replace(/\s/g, '').replace(country.phoneCode, '')
     
     const regex = new RegExp(country.phonePattern)
     if (!regex.test(cleanValue)) {
       return t("validation.phoneFormat", { example: country.example })
     }
     
-    if (cleanValue.length < country.phoneLength) {
+    if (cleanValue.length !== country.phoneLength) {
       return t("validation.phoneLength", { count: country.phoneLength })
     }
     

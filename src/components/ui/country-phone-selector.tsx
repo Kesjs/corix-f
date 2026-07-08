@@ -22,7 +22,7 @@ const countries: Country[] = [
     name: "Espagne",
     flag: "/esp.png",
     phoneCode: "+34",
-    phonePattern: "^[0-9]{9}$",
+    phonePattern: "^[67][0-9]{8}$",
     phoneLength: 9,
     example: "+34 612 345 678"
   },
@@ -31,7 +31,7 @@ const countries: Country[] = [
     name: "France",
     flag: "/fr.png",
     phoneCode: "+33",
-    phonePattern: "^[0-9]{9}$",
+    phonePattern: "^[67][0-9]{8}$",
     phoneLength: 9,
     example: "+33 6 12 34 56 78"
   },
