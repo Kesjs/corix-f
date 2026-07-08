@@ -170,6 +170,18 @@ export default function RegisterPage() {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
+    console.log('=== Début handleRegister ===')
+    console.log('lastName:', lastName)
+    console.log('firstName:', firstName)
+    console.log('city:', city)
+    console.log('profession:', profession)
+    console.log('email:', email)
+    console.log('password:', password ? '***' : 'empty')
+    console.log('confirmPassword:', confirmPassword ? '***' : 'empty')
+    console.log('phone:', phone)
+    console.log('selectedCountry:', selectedCountry)
+    console.log('acceptedTerms:', acceptedTerms)
+    
     setLoading(true)
     
     // Réinitialiser les erreurs
@@ -187,6 +199,8 @@ export default function RegisterPage() {
     validationErrors.confirmPassword = validateConfirmPassword(confirmPassword)
     validationErrors.phone = validatePhone(phone, selectedCountry)
     
+    console.log('Validation errors:', validationErrors)
+    
     if (!acceptedTerms) {
       validationErrors.terms = "Vous devez accepter les conditions générales"
     }
@@ -196,8 +210,11 @@ export default function RegisterPage() {
       Object.entries(validationErrors).filter(([_, value]) => value !== undefined)
     ) as typeof errors
     
+    console.log('Filtered errors:', filteredErrors)
+    
     // Si des erreurs existent
     if (Object.keys(filteredErrors).length > 0) {
+      console.log('Erreurs de validation détectées, arrêt')
       setErrors(filteredErrors)
       setLoading(false)
       
@@ -211,14 +228,19 @@ export default function RegisterPage() {
       
       return
     }
+    
+    console.log('Validation réussie, tentative d\'inscription')
 
     try {
       // Vérifier que selectedCountry n'est pas null
       if (!selectedCountry) {
+        console.log('selectedCountry est null')
         setErrors({ ...errors, phone: "Veuillez sélectionner un pays" })
         setLoading(false)
         return
       }
+      
+      console.log('Tentative signUp Supabase avec:', { email, password: '***' })
       
       // 1. Créer le compte utilisateur
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
@@ -237,14 +259,20 @@ export default function RegisterPage() {
         }
       })
 
+      console.log('Réponse Supabase:', { authData, signUpError })
+
       if (signUpError) {
+        console.error('Erreur signUp:', signUpError)
         const errorMessage = getFrenchErrorMessage(signUpError.message)
         setErrors({ ...errors, general: errorMessage })
+        setLoading(false)
         return
       }
 
       // 2. Si l'inscription réussit et qu'on a un utilisateur
       if (authData.user) {
+        console.log('Utilisateur créé:', authData.user.id)
+        
         // 3. Créer le profil dans la table profiles
         // Créer le profil (non bloquant)
         try {
@@ -269,15 +297,20 @@ export default function RegisterPage() {
           console.warn('Erreur non bloquante lors de la création du profil:', profileError)
         }
         
+        console.log('Redirection vers /auth/login?registered=true')
         // Redirection vers la page de connexion
         router.push("/auth/login?registered=true")
       } else {
+        console.log('authData.user est null')
         setErrors({ ...errors, general: "Compte créé mais utilisateur non disponible" })
+        setLoading(false)
       }
     } catch (err) {
       console.error('Erreur d\'inscription:', err)
       setErrors({ ...errors, general: "Une erreur s'est produite lors de l'inscription" })
+      setLoading(false)
     } finally {
+      console.log('Fin handleRegister, loading:', loading)
       setLoading(false)
     }
   }
