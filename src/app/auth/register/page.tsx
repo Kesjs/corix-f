@@ -8,6 +8,7 @@ import { Logo } from "@/components/ui/logo"
 import { LanguageSelector } from "@/components/ui/language-selector"
 import { CountryPhoneSelector } from "@/components/ui/country-phone-selector"
 import { Eye, EyeOff, User, Building, Briefcase, Mail, Phone, Lock } from "lucide-react"
+import { Checkbox } from "@/components/ui/checkbox"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase"
 import { useRouter } from "next/navigation"
@@ -106,7 +107,7 @@ export default function RegisterPage() {
     if (!country) return t("validation.phoneCountryRequired")
     
     // Extraire la partie numérique sans le code pays et les espaces
-    const cleanValue = value.replace(/\s/g, '').replace(country.phoneCode, '')
+    const cleanValue = value.replace(/\s/g, '').replace(/^\+?\d+/, '')
     
     const regex = new RegExp(country.phonePattern)
     if (!regex.test(cleanValue)) {
@@ -502,16 +503,14 @@ export default function RegisterPage() {
 
               {/* Section conditions et soumission */}
               <div className="border-t pt-4 mt-4">
-                <div className="flex items-start gap-2 mb-4">
-                  <input 
-                    type="checkbox" 
-                    className="mt-1" 
-                    checked={acceptedTerms}
-                    onChange={(e) => setAcceptedTerms(e.target.checked)}
-                    required
+                <div className="flex items-start gap-3 mb-4">
+                  <Checkbox
                     id="terms-checkbox"
+                    checked={acceptedTerms}
+                    onCheckedChange={setAcceptedTerms}
+                    className="mt-0.5"
                   />
-                  <label htmlFor="terms-checkbox" className="text-sm text-muted-foreground cursor-pointer">
+                  <label htmlFor="terms-checkbox" className="text-sm text-muted-foreground cursor-pointer select-none leading-relaxed">
                     Je déclare que les informations fournies sont exactes et complètes. J'accepte les{" "}
                     <Link href="/legal/cgu" className="text-accent hover:underline font-medium">
                       conditions générales d'utilisation
