@@ -4,11 +4,14 @@ import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { NotificationCenter } from "@/components/ui/notification-center"
+import { MobileBottomBar } from "@/components/ui/mobile-bottom-bar"
+import { LanguageSelector } from "@/components/ui/language-selector"
 import { 
   Users, CreditCard, TrendingUp, AlertCircle, Search, Bell, ChevronDown, 
   DollarSign, Shield, FileText, Lock, Home, Briefcase, Mail, Phone,
   Eye, MoreVertical, Download, Filter, RefreshCw, CheckCircle, XCircle,
-  BarChart3, PieChart, Activity, Calendar, Clock, UserCheck, UserX
+  BarChart3, PieChart, Activity, Calendar, Clock, UserCheck, UserX, Globe
 } from "lucide-react"
 import AdminSidebar from "./components/sidebar"
 import StatCard from "./components/stat-card"
@@ -55,6 +58,8 @@ export default function AdminDashboard() {
   const [pendingKYCs, setPendingKYCs] = useState<KYC[]>([])
   const [recentTransactions, setRecentTransactions] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(true)
+  const [showNotifications, setShowNotifications] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
   const fetchDashboardData = useCallback(async () => {
     setLoading(true)
@@ -100,6 +105,13 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     fetchDashboardData()
+    
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
   }, [fetchDashboardData])
 
   const getStatusColor = (status: string) => {
@@ -118,46 +130,87 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-background">
       <AdminSidebar />
       
-      {/* Main Content */}
-      <main className="ml-64 p-6">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-2xl font-bold text-primary">Tableau de bord Admin</h1>
-            <p className="text-muted-foreground">Vue d&apos;ensemble de l&apos;activité bancaire</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="Rechercher..."
-                className="pl-10 pr-4 py-2 border border-input rounded-lg bg-transparent focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none w-64"
-              />
-            </div>
-            <Button variant="outline" size="icon" className="relative">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full" />
-            </Button>
-            <Button variant="outline" onClick={fetchDashboardData} disabled={loading}>
-              <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-              Actualiser
-            </Button>
-            <div className="flex items-center gap-3 px-4 py-2 border rounded-lg">
-              <div className="w-8 h-8 bg-accent/10 rounded-full flex items-center justify-center">
-                <span className="font-bold text-accent">A</span>
+      {/* Mobile Header */}
+      {isMobile && (
+        <div className="md:ml-0 sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border">
+          <div className="px-4 py-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                  <span className="text-accent font-bold text-sm">C</span>
+                </div>
+                <div>
+                  <h1 className="font-bold text-primary">Admin Dashboard</h1>
+                  <p className="text-xs text-muted-foreground">
+                    {stats.totalUsers.toLocaleString()} utilisateurs • {stats.pendingKYC} KYC
+                  </p>
+                </div>
               </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-medium">Admin</span>
-                <span className="text-xs text-muted-foreground">Super Admin</span>
+              <div className="flex items-center gap-2">
+                <LanguageSelector variant="compact" />
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="relative"
+                  onClick={() => setShowNotifications(true)}
+                >
+                  <Bell className="w-5 h-5" />
+                  <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full animate-pulse" />
+                </Button>
               </div>
-              <ChevronDown className="w-4 h-4 text-muted-foreground" />
             </div>
           </div>
         </div>
+      )}
+      
+      {/* Main Content */}
+      <main className={`${isMobile ? 'px-4 py-6 pb-20' : 'ml-64 p-6'}`}>
+        {/* Header - Desktop Only */}
+        {!isMobile && (
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-2xl font-bold text-primary">Tableau de bord Admin</h1>
+              <p className="text-muted-foreground">Vue d&apos;ensemble de l&apos;activité bancaire</p>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <input
+                  type="text"
+                  placeholder="Rechercher..."
+                  className="pl-10 pr-4 py-2 border border-input rounded-lg bg-transparent focus:border-accent focus:ring-2 focus:ring-accent/20 outline-none w-64"
+                />
+              </div>
+              <LanguageSelector variant="simple" />
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="relative"
+                onClick={() => setShowNotifications(true)}
+              >
+                <Bell className="w-5 h-5" />
+                <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full" />
+              </Button>
+              <Button variant="outline" onClick={fetchDashboardData} disabled={loading}>
+                <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                Actualiser
+              </Button>
+              <div className="flex items-center gap-3 px-4 py-2 border rounded-lg">
+                <div className="w-8 h-8 bg-accent/10 rounded-full flex items-center justify-center">
+                  <span className="font-bold text-accent">A</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium">Admin</span>
+                  <span className="text-xs text-muted-foreground">Super Admin</span>
+                </div>
+                <ChevronDown className="w-4 h-4 text-muted-foreground" />
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className={`grid grid-cols-2 ${isMobile ? 'lg:grid-cols-4' : 'md:grid-cols-2 lg:grid-cols-4'} gap-4 lg:gap-6 mb-6 lg:mb-8`}>
           <StatCard
             title="Utilisateurs totaux"
             value={stats.totalUsers.toLocaleString()}
@@ -193,7 +246,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Charts and Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className={`grid grid-cols-1 ${isMobile ? 'lg:grid-cols-3' : 'lg:grid-cols-3'} gap-4 lg:gap-6 mb-6 lg:mb-8`}>
           {/* Revenue Chart */}
           <div className="lg:col-span-2">
             <ChartCard
@@ -250,7 +303,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Recent Users and KYC */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className={`grid grid-cols-1 ${isMobile ? 'lg:grid-cols-2' : 'lg:grid-cols-2'} gap-4 lg:gap-6 mb-6 lg:mb-8`}>
           {/* Recent Users */}
           <Card className="shadow-sm">
             <CardHeader className="flex flex-row items-center justify-between">
@@ -383,7 +436,7 @@ export default function AdminDashboard() {
         </Card>
 
         {/* System Status */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className={`mt-6 lg:mt-8 grid grid-cols-1 ${isMobile ? 'md:grid-cols-3' : 'md:grid-cols-3'} gap-4 lg:gap-6`}>
           <Card className="shadow-sm border-l-4 border-l-success">
             <CardContent className="p-4 flex items-center justify-between">
               <div>
@@ -415,6 +468,41 @@ export default function AdminDashboard() {
           </Card>
         </div>
       </main>
+
+      {/* Mobile Notifications Overlay */}
+      {showNotifications && isMobile && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50">
+          <div className="absolute inset-4 top-20">
+            <NotificationCenter 
+              variant="dropdown"
+              onClose={() => setShowNotifications(false)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Desktop Notifications Overlay */}
+      {showNotifications && !isMobile && (
+        <div className="fixed inset-0 bg-black/20 z-40">
+          <div 
+            className="absolute inset-0"
+            onClick={() => setShowNotifications(false)}
+          />
+          <div className="absolute top-20 right-6 max-w-md">
+            <NotificationCenter 
+              variant="dropdown"
+              onClose={() => setShowNotifications(false)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Bottom Bar */}
+      <MobileBottomBar 
+        userType="admin"
+        unreadNotifications={5}
+        unreadMessages={2}
+      />
     </div>
   )
 }

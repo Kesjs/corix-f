@@ -19,7 +19,7 @@ const languages: Language[] = [
 ]
 
 interface LanguageSelectorProps {
-  variant?: "header" | "dropdown" | "simple"
+  variant?: "header" | "dropdown" | "simple" | "compact"
 }
 
 export function LanguageSelector({ variant = "header" }: LanguageSelectorProps) {
@@ -31,6 +31,75 @@ export function LanguageSelector({ variant = "header" }: LanguageSelectorProps) 
   const handleLanguageSelect = (language: Language) => {
     setLanguage(language.code as "fr" | "es" | "en")
     setIsOpen(false)
+  }
+
+  if (variant === "compact") {
+    return (
+      <div className="relative">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="flex items-center gap-2 px-2 py-1 rounded-md bg-secondary/50 hover:bg-secondary transition-colors cursor-pointer"
+          style={{ touchAction: "manipulation" }}
+          aria-label={`Changer la langue. Actuellement : ${selectedLanguage.name}`}
+          aria-expanded={isOpen}
+          aria-haspopup="true"
+        >
+          <div className="relative w-4 h-3">
+            <Image
+              src={selectedLanguage.flag}
+              alt={selectedLanguage.name}
+              fill
+              className="object-cover rounded-sm"
+              sizes="16px"
+            />
+          </div>
+          <span className="text-xs font-medium">{selectedLanguage.code.toUpperCase()}</span>
+          <ChevronDown className={cn(
+            "w-3 h-3 transition-transform",
+            isOpen && "rotate-180"
+          )} />
+        </button>
+
+        {isOpen && (
+          <>
+            <div 
+              className="fixed inset-0 bg-black/20 z-40"
+              onClick={() => setIsOpen(false)}
+              style={{ touchAction: "manipulation" }}
+            />
+            <div className="absolute top-full left-0 mt-1 w-36 bg-background rounded-lg shadow-lg border border-border z-50 overflow-hidden">
+              <div className="py-1">
+                {languages.map((language) => (
+                  <button
+                    key={language.code}
+                    onClick={() => handleLanguageSelect(language)}
+                    className={cn(
+                      "flex items-center gap-2 w-full px-3 py-2 hover:bg-secondary/50 transition-colors cursor-pointer",
+                      selectedLanguage.code === language.code && "bg-accent/10"
+                    )}
+                    style={{ touchAction: "manipulation" }}
+                  >
+                    <div className="relative w-4 h-3 flex-shrink-0">
+                      <Image
+                        src={language.flag}
+                        alt={language.name}
+                        fill
+                        className="object-cover rounded-sm"
+                        sizes="16px"
+                      />
+                    </div>
+                    <span className="text-xs font-medium flex-1">{language.name}</span>
+                    {selectedLanguage.code === language.code && (
+                      <div className="ml-auto w-1.5 h-1.5 bg-accent rounded-full flex-shrink-0" />
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+    )
   }
 
   if (variant === "simple") {

@@ -6,10 +6,11 @@ import { usePathname } from "next/navigation"
 import { 
   LayoutDashboard, Users, FileCheck, CreditCard, BarChart3, 
   Shield, Settings, HelpCircle, LogOut, Bell, ChevronLeft, ChevronRight,
-  Home, TrendingUp, Wallet, AlertCircle, FileText, PieChart
+  Home, TrendingUp, Wallet, AlertCircle, FileText, PieChart, Globe, MessageCircle
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { LanguageSelector } from "@/components/ui/language-selector"
 
 const menuItems = [
   { 
@@ -76,6 +77,7 @@ const menuItems = [
 ]
 
 const supportItems = [
+  { name: "Messages", href: "/admin/messages", icon: MessageCircle },
   { name: "Support", href: "/admin/support", icon: HelpCircle },
   { name: "Déconnexion", href: "/auth/logout", icon: LogOut }
 ]
@@ -159,18 +161,38 @@ export default function AdminSidebar() {
       {/* Notifications and Support */}
       <div className="p-4 border-t border-border space-y-4">
         {!collapsed && (
-          <div className="bg-secondary/50 rounded-lg p-3">
-            <div className="flex items-center gap-3 mb-2">
-              <Bell className="w-5 h-5 text-warning" />
-              <span className="font-medium text-sm">Notifications</span>
+          <div className="space-y-3">
+            {/* Language Selector */}
+            <div>
+              <div className="flex items-center gap-2 mb-2 px-3">
+                <Globe className="w-4 h-4 text-primary" />
+                <span className="text-sm font-medium">Langue</span>
+              </div>
+              <div className="px-3">
+                <LanguageSelector variant="compact" />
+              </div>
             </div>
-            <p className="text-xs text-muted-foreground">
-              3 alertes nécessitent votre attention
-            </p>
+
+            {/* System Alerts */}
+            <div className="bg-secondary/50 rounded-lg p-3">
+              <div className="flex items-center gap-3 mb-2">
+                <Bell className="w-5 h-5 text-warning" />
+                <span className="font-medium text-sm">Alertes système</span>
+              </div>
+              <p className="text-xs text-muted-foreground mb-2">
+                {5} alertes nécessitent votre attention
+              </p>
+              <div className="flex gap-2">
+                <Badge variant="destructive" className="text-xs">KYC: 23</Badge>
+                <Badge variant="warning" className="text-xs">Sécurité: 2</Badge>
+              </div>
+            </div>
           </div>
         )}
+        
         {collapsed && (
-          <div className="flex justify-center">
+          <div className="flex flex-col items-center gap-2">
+            <Globe className="w-5 h-5 text-primary" />
             <Bell className="w-5 h-5 text-warning" />
           </div>
         )}

@@ -6,11 +6,15 @@ import { createClient } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { BankCard } from "@/components/ui/bank-card"
+import { NotificationCenter } from "@/components/ui/notification-center"
+import { MobileBottomBar } from "@/components/ui/mobile-bottom-bar"
+import { LanguageSelector } from "@/components/ui/language-selector"
 import {
   CreditCard, TrendingUp, PiggyBank, Send, Plus, Bell, ChevronDown,
   DollarSign, ArrowUpRight, ArrowDownLeft, Eye, MoreVertical,
-  Calendar, Shield, Wallet, Target, Activity, RefreshCw
+  Calendar, Shield, Wallet, Target, Activity, RefreshCw, Globe,
+  MessageCircle, Zap, Star, TrendingDown
 } from "lucide-react"
 import UserSidebar from "./components/sidebar"
 
@@ -19,6 +23,8 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const [transactions, setTransactions] = useState<any[]>([])
   const [kycCompleted, setKycCompleted] = useState(false) // État KYC
+  const [showNotifications, setShowNotifications] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const [stats, setStats] = useState({
     balance: 2450.00,
     monthlyIncome: 3200.00,
@@ -51,7 +57,7 @@ export default function DashboardPage() {
       .eq('status', 'verified')
       .limit(1)
     
-    setKycCompleted(documents && documents.length > 0)
+    setKycCompleted(Boolean(documents && documents.length > 0))
     
     setUser({
       ...session.user,
@@ -79,6 +85,13 @@ export default function DashboardPage() {
   useEffect(() => {
     checkUser()
     loadDashboardData()
+    
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
   if (loading && !user) {
@@ -96,27 +109,70 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-background">
       <UserSidebar user={user} />
       
-      {/* Main Content */}
-      <main className="ml-64 p-6">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-2xl font-bold text-primary">Tableau de bord</h1>
-            <p className="text-muted-foreground">
-              Bonjour, {user?.profile?.first_name || user?.email?.split('@')[0] || 'Utilisateur'} 👋
-            </p>
-          </div>
-          <div className="flex items-center gap-4">
-            <Button variant="outline" size="icon" className="relative">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full" />
-            </Button>
-            <Button variant="outline" onClick={loadDashboardData} disabled={loading}>
-              <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-              Actualiser
-            </Button>
+      {/* Mobile Header */}
+      {isMobile && (
+        <div className="md:ml-0 sticky top-0 z-10 bg-background/95 backdrop-blur-md border-b border-border">
+          <div className="px-4 py-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+                  <span className="text-accent font-bold text-sm">C</span>
+                </div>
+                <div>
+                  <h1 className="font-bold text-primary">
+                    Bonjour {user?.profile?.first_name || user?.email?.split('@')[0] || 'Utilisateur'}
+                  </h1>
+                  <p className="text-xs text-muted-foreground">
+                    {stats.balance.toLocaleString()} € disponible
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <LanguageSelector variant="simple" />
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="relative"
+                  onClick={() => setShowNotifications(true)}
+                >
+                  <Bell className="w-5 h-5" />
+                  <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full animate-pulse" />
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
+      )}
+      
+      {/* Main Content */}
+      <main className={`${isMobile ? 'px-4 py-6 pb-20' : 'ml-64 p-6'}`}>
+        {/* Header - Desktop Only */}
+        {!isMobile && (
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h1 className="text-2xl font-bold text-primary">Tableau de bord</h1>
+              <p className="text-muted-foreground">
+                Bonjour, {user?.profile?.first_name || user?.email?.split('@')[0] || 'Utilisateur'} 👋
+              </p>
+            </div>
+            <div className="flex items-center gap-4">
+              <LanguageSelector variant="simple" />
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="relative"
+                onClick={() => setShowNotifications(true)}
+              >
+                <Bell className="w-5 h-5" />
+                <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full animate-pulse" />
+              </Button>
+              <Button variant="outline" onClick={loadDashboardData} disabled={loading}>
+                <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                Actualiser
+              </Button>
+            </div>
+          </div>
+        )}
 
         {/* KYC Notification */}
         {!kycCompleted && (
@@ -248,37 +304,20 @@ export default function DashboardPage() {
               </CardContent>
             </Card>
 
-            {/* Virtual Card */}
-            <Card className="bg-gradient-to-r from-primary to-primary/80 text-white shadow-lg">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-8">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
-                      <span className="text-accent font-bold text-sm">C</span>
-                    </div>
-                    <span className="font-medium">Corix Finanza</span>
-                  </div>
-                  <CreditCard className="w-6 h-6 opacity-80" />
-                </div>
-                <p className="text-2xl font-mono tracking-wider mb-6">•••• •••• •••• 4521</p>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-xs opacity-70">Titulaire</p>
-                    <p className="text-sm font-medium">
-                      {user?.profile?.first_name?.toUpperCase() || user?.email?.split('@')[0]?.toUpperCase() || 'UTILISATEUR'}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-xs opacity-70">Expiration</p>
-                    <p className="text-sm font-medium">12/26</p>
-                  </div>
-                  <div>
-                    <p className="text-xs opacity-70">CVV</p>
-                    <p className="text-sm font-mono">•••</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+            {/* Bank Card */}
+            <div className="mb-6">
+              <BankCard
+                cardNumber="4521 8765 4321 9876"
+                holderName={`${user?.profile?.first_name?.toUpperCase() || ''} ${user?.profile?.last_name?.toUpperCase() || ''}`.trim() || 'UTILISATEUR'}
+                expiryDate="12/28"
+                cvv="123"
+                balance={stats.balance}
+                cardType="visa"
+                cardStyle="premium"
+                isVirtual={true}
+                variant={isMobile ? "compact" : "full"}
+              />
+            </div>
 
             {/* Recent Transactions */}
             <Card className="shadow-sm">
@@ -453,6 +492,25 @@ export default function DashboardPage() {
           </div>
         </div>
       </main>
+
+      {/* Notifications Overlay */}
+      {showNotifications && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 md:hidden">
+          <div className="absolute inset-4 top-20">
+            <NotificationCenter 
+              variant="dropdown"
+              onClose={() => setShowNotifications(false)}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Bottom Bar */}
+      <MobileBottomBar 
+        userType="client"
+        unreadNotifications={3}
+        unreadMessages={1}
+      />
     </div>
   )
 }

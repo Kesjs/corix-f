@@ -6,10 +6,11 @@ import { usePathname } from "next/navigation"
 import { 
   LayoutDashboard, CreditCard, Send, PiggyBank, TrendingUp, 
   User, Settings, HelpCircle, LogOut, Bell, ChevronLeft, ChevronRight,
-  Home, Wallet, Target, FileText, Shield, History
+  Home, Wallet, Target, FileText, Shield, History, MessageCircle, Globe
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { LanguageSelector } from "@/components/ui/language-selector"
 
 interface UserSidebarProps {
   user: any
@@ -67,7 +68,8 @@ const menuItems = [
 ]
 
 const supportItems = [
-  { name: "Aide & Support", href: "/dashboard/support", icon: HelpCircle },
+  { name: "Support", href: "/dashboard/support", icon: MessageCircle },
+  { name: "Aide & Support", href: "/dashboard/help", icon: HelpCircle },
   { name: "Déconnexion", href: "/auth/logout", icon: LogOut }
 ]
 
@@ -185,16 +187,27 @@ export default function UserSidebar({ user }: UserSidebarProps) {
 
         {/* Quick Help */}
         {!collapsed && (
-          <div className="mt-4 pt-4 border-t border-border">
+          <div className="mt-4 pt-4 border-t border-border space-y-3">
+            {/* Language Selector */}
+            <div className="px-3">
+              <div className="flex items-center gap-2 mb-2">
+                <Globe className="w-4 h-4 text-primary" />
+                <span className="text-sm font-medium">Langue</span>
+              </div>
+              <LanguageSelector variant="compact" />
+            </div>
+            
+            {/* Support Card */}
             <div className="bg-secondary/50 rounded-lg p-3">
               <div className="flex items-center gap-2 mb-1">
                 <HelpCircle className="w-4 h-4 text-primary" />
                 <span className="text-sm font-medium">Besoin d'aide ?</span>
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-muted-foreground mb-2">
                 Contactez notre support 24/7
               </p>
-              <Button variant="outline" size="sm" className="w-full mt-2">
+              <Button variant="outline" size="sm" className="w-full">
+                <MessageCircle className="w-4 h-4 mr-2" />
                 Contacter le support
               </Button>
             </div>
