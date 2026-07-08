@@ -11,11 +11,13 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { useLanguage } from "@/contexts/language-context"
+import { useCountUp } from "@/hooks/useCountUp"
 
 export default function LandingPage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false)
   const { t } = useLanguage()
+  const { count: clientCount, elementRef: clientRef } = useCountUp({ end: 37000, duration: 2500 })
 
   return (
     <div className="min-h-screen bg-background">
@@ -268,8 +270,10 @@ export default function LandingPage() {
 
             {/* Statistiques rapides */}
             <div className="mt-16 grid grid-cols-2 md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-white mb-1">37K+</div>
+              <div className="text-center" ref={clientRef}>
+                <div className="text-2xl md:text-3xl font-bold text-white mb-1">
+                  {Math.floor(clientCount / 1000)}K+
+                </div>
                 <div className="text-sm text-white/80">{t("stats.clients")}</div>
               </div>
              
