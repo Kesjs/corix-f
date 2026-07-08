@@ -269,8 +269,8 @@ export default function RegisterPage() {
           console.warn('Erreur non bloquante lors de la création du profil:', profileError)
         }
         
-        // Redirection vers le dashboard - le KYC pourra être fait plus tard
-        router.push("/dashboard")
+        // Redirection vers la page de connexion
+        router.push("/auth/login?registered=true")
       } else {
         setErrors({ ...errors, general: "Compte créé mais utilisateur non disponible" })
       }
@@ -461,9 +461,14 @@ export default function RegisterPage() {
                         type={showPassword ? "text" : "password"}
                         placeholder={t("placeholder.createPassword")} 
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={(e) => {
+                          setPassword(e.target.value)
+                          handleFieldChange('password', e.target.value, validatePassword)
+                        }}
+                        onBlur={() => handleFieldChange('password', password, validatePassword)}
                         required
-                        className="pr-10"
+                        className={errors.password ? "border-destructive focus-visible:ring-destructive" : ""}
+                        data-error={errors.password ? "true" : "false"}
                       />
                       <button
                         type="button"
@@ -473,6 +478,12 @@ export default function RegisterPage() {
                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
                     </div>
+                    {errors.password && (
+                      <p className="text-destructive text-xs flex items-center gap-1">
+                        <span className="w-1 h-1 rounded-full bg-destructive"></span>
+                        {errors.password}
+                      </p>
+                    )}
                     <p className="text-xs text-muted-foreground">
                       Au moins 8 caractères, une majuscule et un chiffre
                     </p>
@@ -485,9 +496,14 @@ export default function RegisterPage() {
                         type={showConfirmPassword ? "text" : "password"}
                         placeholder={t("placeholder.confirmPassword")} 
                         value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        onChange={(e) => {
+                          setConfirmPassword(e.target.value)
+                          handleFieldChange('confirmPassword', e.target.value, validateConfirmPassword)
+                        }}
+                        onBlur={() => handleFieldChange('confirmPassword', confirmPassword, validateConfirmPassword)}
                         required
-                        className="pr-10"
+                        className={errors.confirmPassword ? "border-destructive focus-visible:ring-destructive" : ""}
+                        data-error={errors.confirmPassword ? "true" : "false"}
                       />
                       <button
                         type="button"
@@ -497,6 +513,12 @@ export default function RegisterPage() {
                         {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                       </button>
                     </div>
+                    {errors.confirmPassword && (
+                      <p className="text-destructive text-xs flex items-center gap-1">
+                        <span className="w-1 h-1 rounded-full bg-destructive"></span>
+                        {errors.confirmPassword}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -535,7 +557,7 @@ export default function RegisterPage() {
                       type="submit" 
                       className="w-full" 
                       size="lg"
-                      disabled={loading || !!errors.phone}
+                      disabled={loading || Object.keys(errors).length > 0 || !acceptedTerms}
                     >
                       {loading ? "Vérification en cours..." : "Ouvrir mon compte bancaire"}
                     </Button>

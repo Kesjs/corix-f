@@ -77,27 +77,27 @@ export default function AdminCardsPage() {
         </div>
 
         <nav className="p-4 space-y-1">
-          <a href="/admin" className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors">
+          <a href="/sysadmin" className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors">
             <AlertCircle className="w-5 h-5" />
             <span className="font-medium">Vue d'ensemble</span>
           </a>
-          <a href="/admin/users" className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors">
+          <a href="/sysadmin/users" className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors">
             <AlertCircle className="w-5 h-5" />
             <span className="font-medium">Utilisateurs</span>
           </a>
-          <a href="/admin/kyc" className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors">
+          <a href="/sysadmin/kyc" className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors">
             <AlertCircle className="w-5 h-5" />
             <span className="font-medium">Validation KYC</span>
           </a>
-          <a href="/admin/transactions" className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors">
+          <a href="/sysadmin/transactions" className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors">
             <AlertCircle className="w-5 h-5" />
             <span className="font-medium">Transactions</span>
           </a>
-          <a href="/admin/credits" className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors">
+          <a href="/sysadmin/credits" className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors">
             <AlertCircle className="w-5 h-5" />
             <span className="font-medium">Crédits</span>
           </a>
-          <a href="/admin/cards" className="flex items-center gap-3 px-4 py-3 rounded-lg bg-accent/10 text-accent">
+          <a href="/sysadmin/cards" className="flex items-center gap-3 px-4 py-3 rounded-lg bg-accent/10 text-accent">
             <CreditCard className="w-5 h-5" />
             <span className="font-medium">Cartes</span>
           </a>

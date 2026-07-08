@@ -15,70 +15,70 @@ import { LanguageSelector } from "@/components/ui/language-selector"
 const menuItems = [
   { 
     name: "Dashboard", 
-    href: "/admin", 
+    href: "/sysadmin", 
     icon: LayoutDashboard,
     badge: null
   },
   { 
     name: "Utilisateurs", 
-    href: "/admin/users", 
+    href: "/sysadmin/users", 
     icon: Users,
     badge: "12456"
   },
   { 
     name: "KYC", 
-    href: "/admin/kyc", 
+    href: "/sysadmin/kyc", 
     icon: FileCheck,
     badge: "23",
     badgeColor: "destructive"
   },
   { 
     name: "Transactions", 
-    href: "/admin/transactions", 
+    href: "/sysadmin/transactions", 
     icon: CreditCard,
     badge: "89432"
   },
   { 
     name: "Crédits", 
-    href: "/admin/credits", 
+    href: "/sysadmin/credits", 
     icon: TrendingUp,
     badge: "156"
   },
   { 
     name: "Cartes", 
-    href: "/admin/cards", 
+    href: "/sysadmin/cards", 
     icon: CreditCard,
     badge: "8923"
   },
   { 
     name: "Rapports", 
-    href: "/admin/reports", 
+    href: "/sysadmin/reports", 
     icon: BarChart3,
     badge: null
   },
   { 
     name: "Analytics", 
-    href: "/admin/analytics", 
+    href: "/sysadmin/analytics", 
     icon: PieChart,
     badge: null
   },
   { 
     name: "Sécurité", 
-    href: "/admin/security", 
+    href: "/sysadmin/security", 
     icon: Shield,
     badge: null
   },
   { 
     name: "Paramètres", 
-    href: "/admin/settings", 
+    href: "/sysadmin/settings", 
     icon: Settings,
     badge: null
   }
 ]
 
 const supportItems = [
-  { name: "Messages", href: "/admin/messages", icon: MessageCircle },
-  { name: "Support", href: "/admin/support", icon: HelpCircle },
+  { name: "Messages", href: "/sysadmin/messages", icon: MessageCircle },
+  { name: "Support", href: "/sysadmin/support", icon: HelpCircle },
   { name: "Déconnexion", href: "/auth/logout", icon: LogOut }
 ]
 

@@ -77,15 +77,15 @@ export function MobileBottomBar({
   const adminMenuItems = [
     { 
       name: "Dashboard", 
-      href: "/admin", 
+      href: "/sysadmin", 
       icon: Home,
-      isActive: pathname === "/admin"
+      isActive: pathname === "/sysadmin"
     },
     { 
       name: "Utilisateurs", 
-      href: "/admin/users", 
+      href: "/sysadmin/users", 
       icon: User,
-      isActive: pathname?.startsWith("/admin/users"),
+      isActive: pathname?.startsWith("/sysadmin/users"),
       badge: "156"
     },
     { 
@@ -97,15 +97,15 @@ export function MobileBottomBar({
     },
     { 
       name: "KYC", 
-      href: "/admin/kyc", 
+      href: "/sysadmin/kyc", 
       icon: CreditCard,
-      isActive: pathname?.startsWith("/admin/kyc"),
+      isActive: pathname?.startsWith("/sysadmin/kyc"),
       badge: "23",
       badgeVariant: "destructive"
     },
     { 
       name: "Plus", 
-      href: "/admin/more", 
+      href: "/sysadmin/more", 
       icon: MoreHorizontal,
       isActive: false
     }
@@ -114,9 +114,9 @@ export function MobileBottomBar({
   const menuItems = userType === "admin" ? adminMenuItems : clientMenuItems
 
   const quickActions = userType === "admin" ? [
-    { name: "Approuver KYC", icon: CreditCard, href: "/admin/kyc", color: "bg-green-500" },
-    { name: "Voir utilisateurs", icon: User, href: "/admin/users", color: "bg-blue-500" },
-    { name: "Rapports", icon: MoreHorizontal, href: "/admin/reports", color: "bg-purple-500" },
+    { name: "Approuver KYC", icon: CreditCard, href: "/sysadmin/kyc", color: "bg-green-500" },
+    { name: "Voir utilisateurs", icon: User, href: "/sysadmin/users", color: "bg-blue-500" },
+    { name: "Rapports", icon: MoreHorizontal, href: "/sysadmin/reports", color: "bg-purple-500" },
   ] : [
     { name: "Transférer", icon: Send, href: "/dashboard/transferts", color: "bg-blue-500" },
     { name: "Recharger", icon: Plus, href: "/dashboard/recharge", color: "bg-green-500" },

@@ -20,7 +20,7 @@ const countries: Country[] = [
   {
     code: "es",
     name: "Espagne",
-    flag: "/esp.png",
+    flag: "https://flagcdn.com/w40/es.png",
     phoneCode: "+34",
     phonePattern: "^[67][0-9]{8}$",
     phoneLength: 9,
@@ -29,16 +29,43 @@ const countries: Country[] = [
   {
     code: "fr", 
     name: "France",
-    flag: "/fr.png",
+    flag: "https://flagcdn.com/w40/fr.png",
     phoneCode: "+33",
     phonePattern: "^[67][0-9]{8}$",
     phoneLength: 9,
     example: "+33 6 12 34 56 78"
   },
   {
+    code: "mx",
+    name: "Mexique",
+    flag: "https://flagcdn.com/w40/mx.png",
+    phoneCode: "+52",
+    phonePattern: "^[5-9][0-9]{9}$",
+    phoneLength: 10,
+    example: "+52 55 1234 5678"
+  },
+  {
+    code: "pe",
+    name: "Pérou",
+    flag: "https://flagcdn.com/w40/pe.png",
+    phoneCode: "+51",
+    phonePattern: "^9[0-9]{8}$",
+    phoneLength: 9,
+    example: "+51 912 345 678"
+  },
+  {
+    code: "ar",
+    name: "Argentine",
+    flag: "https://flagcdn.com/w40/ar.png",
+    phoneCode: "+54",
+    phonePattern: "^(11|15)[0-9]{8}$",
+    phoneLength: 10,
+    example: "+54 11 1234 5678"
+  },
+  {
     code: "us",
     name: "États-Unis",
-    flag: "/usa.png",
+    flag: "https://flagcdn.com/w40/us.png",
     phoneCode: "+1",
     phonePattern: "^[0-9]{10}$",
     phoneLength: 10,

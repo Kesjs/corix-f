@@ -1,25 +1,15 @@
 "use client"
 
-import { useState, Suspense } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { AuthHeader } from "@/components/auth/auth-header"
-import Link from "next/link"
+import { Logo } from "@/components/ui/logo"
+import { Eye, EyeOff, Shield, Lock, Mail } from "lucide-react"
 import { createClient } from "@/lib/supabase"
-import { useRouter, useSearchParams } from "next/navigation"
-import { Eye, EyeOff } from "lucide-react"
-import { useLanguage } from "@/contexts/language-context"
+import { useRouter } from "next/navigation"
 
-export default function LoginPage() {
-  return (
-    <Suspense fallback={<div>Chargement...</div>}>
-      <LoginForm />
-    </Suspense>
-  )
-}
-
-function LoginForm() {
+export default function AdminLoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
@@ -27,14 +17,8 @@ function LoginForm() {
   const [error, setError] = useState<string | null>(null)
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
   const router = useRouter()
-  const searchParams = useSearchParams()
   const supabase = createClient()
-  const { t } = useLanguage()
 
-  // Vérifier si l'utilisateur vient de s'inscrire
-  const justRegistered = searchParams.get("registered") === "true"
-
-  // Fonctions de validation
   const validateEmail = (value: string): string | undefined => {
     if (!value.trim()) return "Email requis"
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return "Format d'email invalide"
@@ -46,8 +30,7 @@ function LoginForm() {
     return undefined
   }
 
-  // Validation en temps réel
-  const handleFieldChange = (field: keyof typeof errors, value: string, validator?: (value: string) => string | undefined) => {
+  const handleFieldChange = (field: keyof typeof errors, value: string, validator?: (val: string) => string | undefined) => {
     const newErrors = { ...errors }
     if (validator) {
       const error = validator(value)
@@ -82,18 +65,24 @@ function LoginForm() {
     }
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
 
       if (error) {
-        // Traduction des erreurs Supabase en français
+        // Traduction des erreurs Supabase
         const errorMessage = getFrenchErrorMessage(error.message)
         setError(errorMessage)
       } else {
-        // La redirection est gérée par l'AuthProvider
-        router.push("/dashboard")
+        // Vérifier le rôle admin
+        const userRole = data.user?.user_metadata?.role
+        if (userRole !== 'admin') {
+          await supabase.auth.signOut()
+          setError("Accès réservé aux administrateurs")
+        } else {
+          router.push('/sysadmin')
+        }
       }
     } catch (err) {
       setError("Une erreur s'est produite lors de la connexion")
@@ -102,7 +91,6 @@ function LoginForm() {
     }
   }
 
-  // Fonction pour traduire les messages d'erreur Supabase
   const getFrenchErrorMessage = (message: string): string => {
     if (message.includes("Invalid login credentials")) {
       return "Email ou mot de passe incorrect"
@@ -119,32 +107,30 @@ function LoginForm() {
     if (message.includes("Password")) {
       return "Mot de passe incorrect"
     }
-    // Message par défaut
     return "Une erreur s'est produite lors de la connexion"
   }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <AuthHeader />
+      <header className="p-4 flex items-center justify-between">
+        <Logo />
+      </header>
 
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center p-4">
-        <Card className="w-full max-w-md shadow-sm">
+        <Card className="w-full max-w-md shadow-lg border-border/50">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl text-primary">Connexion</CardTitle>
+            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Shield className="w-8 h-8 text-primary" />
+            </div>
+            <CardTitle className="text-2xl text-primary">Administration</CardTitle>
             <CardDescription>
-              Accédez à votre compte Corix Finanza
+              Accès sécurisé au système de gestion
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-4">
-              {justRegistered && (
-                <div className="bg-teal/10 border border-teal text-teal text-sm p-3 rounded-lg">
-                  Compte créé avec succès ! Connectez-vous avec vos identifiants.
-                </div>
-              )}
-
               {error && (
                 <div className="bg-destructive/10 border border-destructive text-destructive text-sm p-3 rounded-lg">
                   {error}
@@ -152,17 +138,19 @@ function LoginForm() {
               )}
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Email</label>
+                <label className="text-sm font-medium text-foreground flex items-center gap-1">
+                  <Mail className="w-4 h-4" />
+                  Email administrateur
+                </label>
                 <Input 
                   type="email" 
-                  placeholder={t("placeholder.enterEmail")}
+                  placeholder="admin@corix-finanza.com"
                   value={email}
                   onChange={(e) => {
                     setEmail(e.target.value)
                     handleFieldChange('email', e.target.value, validateEmail)
                   }}
                   onBlur={() => handleFieldChange('email', email, validateEmail)}
-                  required
                   className={errors.email ? "border-destructive focus-visible:ring-destructive" : ""}
                 />
                 {errors.email && (
@@ -174,18 +162,20 @@ function LoginForm() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-foreground">Mot de passe</label>
+                <label className="text-sm font-medium text-foreground flex items-center gap-1">
+                  <Lock className="w-4 h-4" />
+                  Mot de passe
+                </label>
                 <div className="relative">
                   <Input 
                     type={showPassword ? "text" : "password"}
-                    placeholder={t("placeholder.enterPassword")}
+                    placeholder="••••••••"
                     value={password}
                     onChange={(e) => {
                       setPassword(e.target.value)
                       handleFieldChange('password', e.target.value, validatePassword)
                     }}
                     onBlur={() => handleFieldChange('password', password, validatePassword)}
-                    required
                     className={errors.password ? "border-destructive focus-visible:ring-destructive" : "pr-10"}
                   />
                   <button
@@ -204,29 +194,23 @@ function LoginForm() {
                 )}
               </div>
 
-              <div className="text-right">
-                <Link href="/auth/forgot-password" className="text-sm text-accent hover:underline">
-                  Mot de passe oublié ?
-                </Link>
-              </div>
-
               <Button 
                 type="submit" 
                 className="w-full" 
                 size="lg"
                 disabled={loading || Object.keys(errors).length > 0}
               >
-                {loading ? "Connexion en cours..." : "Se connecter"}
+                {loading ? "Connexion en cours..." : "Accéder à l'administration"}
               </Button>
 
-
-
-              <p className="text-center text-sm text-muted-foreground">
-                Pas encore de compte ?{" "}
-                <Link href="/auth/register" className="text-accent hover:underline font-medium">
-                  Créer un compte
-                </Link>
-              </p>
+              <div className="text-center">
+                <a 
+                  href="/auth/login" 
+                  className="text-sm text-muted-foreground hover:text-accent transition-colors"
+                >
+                  ← Retour à l'accès client
+                </a>
+              </div>
             </form>
           </CardContent>
         </Card>

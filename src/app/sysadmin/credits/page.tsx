@@ -83,23 +83,23 @@ export default function AdminCreditsPage() {
         </div>
 
         <nav className="p-4 space-y-1">
-          <a href="/admin" className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors">
+          <a href="/sysadmin" className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors">
             <AlertCircle className="w-5 h-5" />
             <span className="font-medium">Vue d'ensemble</span>
           </a>
-          <a href="/admin/users" className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors">
+          <a href="/sysadmin/users" className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors">
             <AlertCircle className="w-5 h-5" />
             <span className="font-medium">Utilisateurs</span>
           </a>
-          <a href="/admin/kyc" className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors">
+          <a href="/sysadmin/kyc" className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors">
             <AlertCircle className="w-5 h-5" />
             <span className="font-medium">Validation KYC</span>
           </a>
-          <a href="/admin/transactions" className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors">
+          <a href="/sysadmin/transactions" className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors">
             <AlertCircle className="w-5 h-5" />
             <span className="font-medium">Transactions</span>
           </a>
-          <a href="/admin/credits" className="flex items-center gap-3 px-4 py-3 rounded-lg bg-accent/10 text-accent">
+          <a href="/sysadmin/credits" className="flex items-center gap-3 px-4 py-3 rounded-lg bg-accent/10 text-accent">
             <TrendingUp className="w-5 h-5" />
             <span className="font-medium">Crédits</span>
             <span className="ml-auto bg-accent text-white text-xs px-2 py-0.5 rounded-full">3</span>
