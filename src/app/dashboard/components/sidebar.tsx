@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { 
   LayoutDashboard, CreditCard, Send, PiggyBank, TrendingUp, 
   User, HelpCircle, LogOut, ChevronLeft, ChevronRight,
@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { LanguageSelector } from "@/components/ui/language-selector"
+import { createClient } from "@/utils/supabase/client"   // ← Adaptez le chemin si différent
 
 interface UserSidebarProps {
   user: any
@@ -30,7 +31,6 @@ const menuItems = [
 const supportItems = [
   { name: "Support", href: "/dashboard/support", icon: MessageCircle },
   { name: "Aide & Support", href: "/dashboard/help", icon: HelpCircle },
-  { name: "Déconnexion", href: "/auth/logout", icon: LogOut },
 ]
 
 function SidebarContent({
@@ -43,6 +43,24 @@ function SidebarContent({
   onNavigate?: () => void
 }) {
   const pathname = usePathname()
+  const router = useRouter()
+
+  const handleLogout = async () => {
+    if (onNavigate) onNavigate() // Ferme le menu mobile
+
+    try {
+      const supabase = createClient()
+      const { error } = await supabase.auth.signOut()
+
+      if (error) throw error
+
+      router.push("/auth/login")
+      router.refresh()
+    } catch (error) {
+      console.error("Erreur déconnexion:", error)
+      alert("Impossible de se déconnecter. Veuillez réessayer.")
+    }
+  }
 
   return (
     <>
@@ -113,6 +131,17 @@ function SidebarContent({
               </Link>
             )
           })}
+
+          {/* Bouton Déconnexion */}
+          <button
+            onClick={handleLogout}
+            className={`flex items-center gap-3 px-3 py-2 rounded-xl text-muted-foreground hover:bg-red-50 hover:text-red-600 transition-colors w-full text-left ${
+              collapsed ? "justify-center" : ""
+            }`}
+          >
+            <LogOut className="w-5 h-5 shrink-0" />
+            {!collapsed && <span className="text-sm">Déconnexion</span>}
+          </button>
         </div>
 
         {!collapsed && (
@@ -149,7 +178,7 @@ export default function UserSidebar({ user }: UserSidebarProps) {
 
   return (
     <>
-      {/* Mobile trigger — floating hamburger, only visible < md */}
+      {/* Mobile trigger */}
       <button
         onClick={() => setMobileOpen(true)}
         aria-label="Ouvrir le menu"
@@ -158,7 +187,7 @@ export default function UserSidebar({ user }: UserSidebarProps) {
         <Menu className="w-5 h-5 text-[#0B1F3A]" />
       </button>
 
-      {/* Desktop sidebar — always visible, static width */}
+      {/* Desktop sidebar */}
       <aside
         className={`hidden md:flex md:flex-col fixed left-0 top-0 bottom-0 ${
           collapsed ? "w-16" : "w-64"
@@ -190,7 +219,7 @@ export default function UserSidebar({ user }: UserSidebarProps) {
         <SidebarContent user={user} collapsed={collapsed} />
       </aside>
 
-      {/* Mobile drawer — hidden by default, slides in over an overlay */}
+      {/* Mobile drawer */}
       <div
         className={`md:hidden fixed inset-0 z-50 transition-opacity duration-300 ${
           mobileOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
