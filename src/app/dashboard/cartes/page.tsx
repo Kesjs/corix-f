@@ -57,7 +57,7 @@ export default function CartesPage() {
             expiryDate="12/28"
             cvv="123"
             balance={2450.0}
-            cardType="mastercard"
+    
             isVirtual={true}
             isBlocked={isBlocked}
             variant="full"
