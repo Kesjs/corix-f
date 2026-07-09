@@ -16,6 +16,7 @@ interface BankCardProps {
   isVirtual?: boolean
   isBlocked?: boolean
   variant?: "full" | "compact"
+  cardStyle?: string
 }
 
 function CardLogo({ cardType }: { cardType: "visa" | "mastercard" }) {
