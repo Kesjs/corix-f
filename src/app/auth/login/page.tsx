@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { AuthHeader } from "@/components/auth/auth-header"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 import { Eye, EyeOff } from "lucide-react"
 import { useLanguage } from "@/contexts/language-context"
 
@@ -26,7 +26,6 @@ function LoginForm() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({})
-  const router = useRouter()
   const searchParams = useSearchParams()
   const supabase = createClient()
   const { t } = useLanguage()
@@ -91,13 +90,12 @@ function LoginForm() {
         // Traduction des erreurs Supabase en français
         const errorMessage = getFrenchErrorMessage(error.message)
         setError(errorMessage)
-      } else {
-        // La redirection est gérée par l'AuthProvider
-        router.push("/dashboard")
+        setLoading(false)
       }
+      // Pas de redirection ici : AuthProvider écoute onAuthStateChange
+      // et redirige vers /dashboard dès que l'event SIGNED_IN se déclenche.
     } catch (err) {
       setError("Une erreur s'est produite lors de la connexion")
-    } finally {
       setLoading(false)
     }
   }
@@ -218,8 +216,6 @@ function LoginForm() {
               >
                 {loading ? "Connexion en cours..." : "Se connecter"}
               </Button>
-
-
 
               <p className="text-center text-sm text-muted-foreground">
                 Pas encore de compte ?{" "}
