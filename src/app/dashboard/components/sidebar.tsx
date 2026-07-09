@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { LanguageSelector } from "@/components/ui/language-selector"
-import { createClient } from "@/utils/supabase/client"
+import { createClient } from "@/lib/supabase"
 
 interface UserSidebarProps {
   user: any
