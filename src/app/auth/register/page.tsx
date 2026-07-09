@@ -42,7 +42,6 @@ export default function RegisterPage() {
   const router = useRouter()
   const supabase = createClient()
 
-  // États d'erreur pour chaque champ
   const [errors, setErrors] = useState<{
     lastName?: string
     firstName?: string
@@ -56,7 +55,6 @@ export default function RegisterPage() {
     general?: string
   }>({})
 
-  // Fonctions de validation
   const validateLastName = (value: string): string | undefined => {
     if (!value.trim()) return t("validation.lastNameRequired")
     if (value.length < 2) return t("validation.lastNameMinLength")
@@ -105,23 +103,21 @@ export default function RegisterPage() {
   const validatePhone = (value: string, country: Country | null): string | undefined => {
     if (!value.trim()) return t("validation.phoneRequired")
     if (!country) return t("validation.phoneCountryRequired")
-    
-    // Extraire la partie numérique sans le code pays et les espaces
+
     const cleanValue = value.replace(/\s/g, '').replace(country.phoneCode, '')
-    
+
     const regex = new RegExp(country.phonePattern)
     if (!regex.test(cleanValue)) {
       return t("validation.phoneFormat", { example: country.example })
     }
-    
+
     if (cleanValue.length !== country.phoneLength) {
       return t("validation.phoneLength", { count: country.phoneLength })
     }
-    
+
     return undefined
   }
 
-  // Validation en temps réel
   const handleFieldChange = (field: keyof typeof errors, value: string, validator?: (value: string) => string | undefined) => {
     const newErrors = { ...errors }
     if (validator) {
@@ -138,8 +134,7 @@ export default function RegisterPage() {
   const handlePhoneChange = (phoneValue: string, country: Country) => {
     setPhone(phoneValue)
     setSelectedCountry(country)
-    
-    // Validation en temps réel
+
     const phoneError = validatePhone(phoneValue, country)
     const newErrors = { ...errors }
     if (phoneError) {
@@ -150,7 +145,6 @@ export default function RegisterPage() {
     setErrors(newErrors)
   }
 
-  // Fonction pour traduire les messages d'erreur Supabase
   const getFrenchErrorMessage = (message: string): string => {
     if (message.includes("User already registered")) {
       return "Un compte existe déjà avec cet email"
@@ -164,32 +158,16 @@ export default function RegisterPage() {
     if (message.includes("weak password")) {
       return "Le mot de passe est trop faible"
     }
-    // Message par défaut
     return "Une erreur s'est produite lors de l'inscription"
   }
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log('=== Début handleRegister ===')
-    console.log('lastName:', lastName)
-    console.log('firstName:', firstName)
-    console.log('city:', city)
-    console.log('profession:', profession)
-    console.log('email:', email)
-    console.log('password:', password ? '***' : 'empty')
-    console.log('confirmPassword:', confirmPassword ? '***' : 'empty')
-    console.log('phone:', phone)
-    console.log('selectedCountry:', selectedCountry)
-    console.log('acceptedTerms:', acceptedTerms)
-    
     setLoading(true)
-    
-    // Réinitialiser les erreurs
     setErrors({})
-    
-    // Validation complète de tous les champs
+
     const validationErrors: typeof errors = {}
-    
+
     validationErrors.lastName = validateLastName(lastName)
     validationErrors.firstName = validateFirstName(firstName)
     validationErrors.city = validateCity(city)
@@ -198,51 +176,36 @@ export default function RegisterPage() {
     validationErrors.password = validatePassword(password)
     validationErrors.confirmPassword = validateConfirmPassword(confirmPassword)
     validationErrors.phone = validatePhone(phone, selectedCountry)
-    
-    console.log('Validation errors:', validationErrors)
-    
+
     if (!acceptedTerms) {
       validationErrors.terms = "Vous devez accepter les conditions générales"
     }
-    
-    // Filtrer les erreurs undefined
+
     const filteredErrors = Object.fromEntries(
       Object.entries(validationErrors).filter(([_, value]) => value !== undefined)
     ) as typeof errors
-    
-    console.log('Filtered errors:', filteredErrors)
-    
-    // Si des erreurs existent
+
     if (Object.keys(filteredErrors).length > 0) {
-      console.log('Erreurs de validation détectées, arrêt')
       setErrors(filteredErrors)
       setLoading(false)
-      
-      // Scroll vers la première erreur
+
       setTimeout(() => {
         const firstErrorElement = document.querySelector('[data-error="true"]')
         if (firstErrorElement) {
           firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
         }
       }, 100)
-      
+
       return
     }
-    
-    console.log('Validation réussie, tentative d\'inscription')
 
     try {
-      // Vérifier que selectedCountry n'est pas null
       if (!selectedCountry) {
-        console.log('selectedCountry est null')
         setErrors({ ...errors, phone: "Veuillez sélectionner un pays" })
         setLoading(false)
         return
       }
-      
-      console.log('Tentative signUp Supabase avec:', { email, password: '***' })
-      
-      // 1. Créer le compte utilisateur
+
       const { data: authData, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
@@ -259,22 +222,14 @@ export default function RegisterPage() {
         }
       })
 
-      console.log('Réponse Supabase:', { authData, signUpError })
-
       if (signUpError) {
-        console.error('Erreur signUp:', signUpError)
         const errorMessage = getFrenchErrorMessage(signUpError.message)
         setErrors({ ...errors, general: errorMessage })
         setLoading(false)
         return
       }
 
-      // 2. Si l'inscription réussit et qu'on a un utilisateur
       if (authData.user) {
-        console.log('Utilisateur créé:', authData.user.id)
-        
-        // 3. Créer le profil dans la table profiles
-        // Créer le profil (non bloquant)
         try {
           const { error: profileError } = await supabase
             .from('profiles')
@@ -290,40 +245,32 @@ export default function RegisterPage() {
             })
 
           if (profileError) {
-            console.warn('Avertissement lors de la création du profil:', profileError)
             // Non bloquant - l'utilisateur pourra compléter son profil plus tard
           }
         } catch (profileError) {
-          console.warn('Erreur non bloquante lors de la création du profil:', profileError)
+          // Erreur non bloquante lors de la création du profil
         }
-        
-        console.log('Redirection vers /auth/login?registered=true')
-        // Redirection vers la page de connexion
+
         router.push("/auth/login?registered=true")
       } else {
-        console.log('authData.user est null')
         setErrors({ ...errors, general: "Compte créé mais utilisateur non disponible" })
         setLoading(false)
       }
     } catch (err) {
-      console.error('Erreur d\'inscription:', err)
       setErrors({ ...errors, general: "Une erreur s'est produite lors de l'inscription" })
       setLoading(false)
     } finally {
-      console.log('Fin handleRegister, loading:', loading)
       setLoading(false)
     }
   }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
       <header className="p-4 flex items-center justify-between">
         <Logo />
         <LanguageSelector variant="simple" />
       </header>
 
-      {/* Main Content */}
       <main className="flex-1 flex items-center justify-center p-4">
         <Card className="w-full max-w-6xl shadow-lg border-border/50">
           <CardHeader className="text-center">
@@ -341,19 +288,18 @@ export default function RegisterPage() {
               )}
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Colonne gauche - Informations personnelles */}
                 <div className="space-y-6">
                   <h3 className="font-medium text-foreground border-b pb-3 flex items-center gap-2">
                     <User className="w-5 h-5" />
                     Informations personnelles
                   </h3>
-                  
+
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-foreground flex items-center gap-1">
                       <User className="w-4 h-4" />
                       Nom *
                     </label>
-                    <Input 
+                    <Input
                       placeholder={t("placeholder.enterLastName")}
                       value={lastName}
                       onChange={(e) => {
@@ -378,7 +324,7 @@ export default function RegisterPage() {
                       <User className="w-4 h-4" />
                       Prénom *
                     </label>
-                    <Input 
+                    <Input
                       placeholder={t("placeholder.enterFirstName")}
                       value={firstName}
                       onChange={(e) => {
@@ -403,7 +349,7 @@ export default function RegisterPage() {
                       <Building className="w-4 h-4" />
                       Ville *
                     </label>
-                    <Input 
+                    <Input
                       placeholder={t("placeholder.enterCity")}
                       value={city}
                       onChange={(e) => {
@@ -428,7 +374,7 @@ export default function RegisterPage() {
                       <Briefcase className="w-4 h-4" />
                       Profession
                     </label>
-                    <Input 
+                    <Input
                       placeholder={t("placeholder.profession")}
                       value={profession}
                       onChange={(e) => {
@@ -452,8 +398,8 @@ export default function RegisterPage() {
                       <Mail className="w-4 h-4" />
                       Email *
                     </label>
-                    <Input 
-                      type="email" 
+                    <Input
+                      type="email"
                       placeholder={t("placeholder.email")}
                       value={email}
                       onChange={(e) => {
@@ -474,11 +420,10 @@ export default function RegisterPage() {
                   </div>
                 </div>
 
-                {/* Colonne droite - Informations de contact et sécurité */}
                 <div className="space-y-4">
                   <h3 className="font-medium text-foreground border-b pb-2">Informations de contact et sécurité</h3>
-                  
-                  <CountryPhoneSelector 
+
+                  <CountryPhoneSelector
                     value={phone}
                     onChange={handlePhoneChange}
                     error={errors.phone || undefined}
@@ -490,9 +435,9 @@ export default function RegisterPage() {
                       Mot de passe *
                     </label>
                     <div className="relative">
-                      <Input 
+                      <Input
                         type={showPassword ? "text" : "password"}
-                        placeholder={t("placeholder.createPassword")} 
+                        placeholder={t("placeholder.createPassword")}
                         value={password}
                         onChange={(e) => {
                           setPassword(e.target.value)
@@ -525,9 +470,9 @@ export default function RegisterPage() {
                   <div className="space-y-2">
                     <label className="text-sm font-medium text-foreground">Confirmer le mot de passe *</label>
                     <div className="relative">
-                      <Input 
+                      <Input
                         type={showConfirmPassword ? "text" : "password"}
-                        placeholder={t("placeholder.confirmPassword")} 
+                        placeholder={t("placeholder.confirmPassword")}
                         value={confirmPassword}
                         onChange={(e) => {
                           setConfirmPassword(e.target.value)
@@ -556,7 +501,6 @@ export default function RegisterPage() {
                 </div>
               </div>
 
-              {/* Section conditions et soumission */}
               <div className="border-t pt-4 mt-4">
                 <div className="flex items-start gap-3 mb-4">
                   <Checkbox
@@ -581,20 +525,20 @@ export default function RegisterPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <p className="text-xs text-muted-foreground">
-                      <span className="font-medium">Note :</span> Tous les champs marqués d'un * sont obligatoires. 
+                      <span className="font-medium">Note :</span> Tous les champs marqués d'un * sont obligatoires.
                       Vous pourrez compléter votre vérification d'identité après création du compte.
                     </p>
                   </div>
                   <div className="flex flex-col space-y-2">
-                    <Button 
-                      type="submit" 
-                      className="w-full" 
+                    <Button
+                      type="submit"
+                      className="w-full"
                       size="lg"
                       disabled={loading || Object.keys(errors).length > 0 || !acceptedTerms}
                     >
                       {loading ? "Vérification en cours..." : "Ouvrir mon compte bancaire"}
                     </Button>
-                    
+
                     <p className="text-center text-sm text-muted-foreground">
                       Déjà client ?{" "}
                       <Link href="/auth/login" className="text-accent hover:underline font-medium">
