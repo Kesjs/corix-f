@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server"
-import { BankCard } from "@/components/bank-card"
+import { BankCard } from "@/components/ui/bank-card"
+
 import { redirect } from "next/navigation"
 
 export default async function CartesPage() {
