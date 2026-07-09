@@ -60,7 +60,7 @@ export default function CartesPage() {
     
             isVirtual={true}
             isBlocked={isBlocked}
-            variant="full"
+
           />
 
           <div className="grid grid-cols-1">
