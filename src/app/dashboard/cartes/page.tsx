@@ -1,21 +1,45 @@
 "use client"
 
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { createClient } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { StatusBadge } from "@/components/ui/status-badge"
+import { BankCard } from "@/components/ui/bank-card"
 import { Navigation } from "@/components/ui/navigation"
-import { CreditCard, Plus, Eye, EyeOff, Lock, Unlock, Settings } from "lucide-react"
-import { useState } from "react"
+import { Plus, Settings } from "lucide-react"
 
 export default function CartesPage() {
-  const [showNumber, setShowNumber] = useState(false)
+  const [user, setUser] = useState<any>(null)
   const [isBlocked, setIsBlocked] = useState(false)
+  const router = useRouter()
+  const supabase = createClient()
+
+  useEffect(() => {
+    const loadUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        router.push("/auth/login")
+        return
+      }
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", session.user.id)
+        .single()
+      setUser({ ...session.user, profile })
+    }
+    loadUser()
+  }, [])
+
+  const holderName =
+    `${user?.profile?.first_name?.toUpperCase() || ""} ${user?.profile?.last_name?.[0]?.toUpperCase() || ""}.`.trim() ||
+    "UTILISATEUR"
 
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-0 md:pl-64">
       <Navigation />
 
-      {/* Header */}
       <header className="sticky top-0 z-40 bg-background border-b border-border px-4 py-4 md:hidden">
         <div className="flex items-center justify-between">
           <h1 className="text-xl font-semibold text-primary">Mes cartes</h1>
@@ -25,58 +49,30 @@ export default function CartesPage() {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="p-4 md:p-8">
         <div className="max-w-4xl mx-auto space-y-6">
-          {/* Card Display */}
-          <Card className="bg-primary text-white shadow-sm">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
-                    <span className="text-accent font-bold text-sm">C</span>
-                  </div>
-                  <span className="font-medium">Corix Finanza</span>
-                </div>
-                <StatusBadge status="active" className="bg-white/10 text-white border-white/20" />
-              </div>
-              <p className="text-2xl font-mono tracking-wider mb-6">
-                {showNumber ? "4521 1234 5678 9012" : "•••• •••• •••• 4521"}
-              </p>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs opacity-70">Titulaire</p>
-                  <p className="text-sm font-medium">BERNADETTE D.</p>
-                </div>
-                <div>
-                  <p className="text-xs opacity-70">Expiration</p>
-                  <p className="text-sm font-medium">12/26</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <BankCard
+            cardNumber="4521 8765 4321 9876"
+            holderName={holderName}
+            expiryDate="12/28"
+            cvv="123"
+            balance={2450.0}
+            cardType="visa"
+            isVirtual={true}
+            isBlocked={isBlocked}
+            variant="full"
+          />
 
-          {/* Card Actions */}
-          <div className="grid grid-cols-2 gap-4">
-            <Button
-              variant="outline"
-              className="flex items-center gap-2"
-              onClick={() => setShowNumber(!showNumber)}
-            >
-              {showNumber ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-              {showNumber ? "Masquer" : "Afficher"} le numéro
-            </Button>
+          <div className="grid grid-cols-1">
             <Button
               variant={isBlocked ? "outline" : "destructive"}
               className="flex items-center gap-2"
               onClick={() => setIsBlocked(!isBlocked)}
             >
-              {isBlocked ? <Unlock className="w-5 h-5" /> : <Lock className="w-5 h-5" />}
-              {isBlocked ? "Débloquer" : "Bloquer"} la carte
+              {isBlocked ? "Débloquer la carte" : "Bloquer la carte"}
             </Button>
           </div>
 
-          {/* Card Settings */}
           <Card className="shadow-sm">
             <CardHeader>
               <CardTitle className="text-lg">Paramètres de la carte</CardTitle>
@@ -112,7 +108,6 @@ export default function CartesPage() {
             </CardContent>
           </Card>
 
-          {/* Recent Transactions on Card */}
           <div>
             <h2 className="text-lg font-semibold text-primary mb-4">Dernières transactions</h2>
             <div className="space-y-3">
@@ -152,7 +147,6 @@ export default function CartesPage() {
             </div>
           </div>
 
-          {/* Request New Card */}
           <Button className="w-full" size="lg">
             <Plus className="w-5 h-5 mr-2" />
             Demander une nouvelle carte
