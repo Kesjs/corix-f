@@ -301,24 +301,6 @@ export function MobileBottomBar({
         <div className="h-safe-area-inset-bottom bg-background/95" />
       </div>
 
-      {/* Floating Notification Button (when not in quick actions) */}
-      {!showQuickActions && userType === "client" && unreadNotifications > 0 && (
-        <div className="fixed bottom-20 right-4 z-20">
-          <Button
-            onClick={() => setShowNotifications(true)}
-            className="rounded-full w-12 h-12 shadow-lg relative animate-bounce"
-          >
-            <Bell className="w-5 h-5" />
-            <Badge 
-              variant="destructive" 
-              className="absolute -top-1 -right-1 text-xs min-w-[20px] h-5"
-            >
-              {unreadNotifications}
-            </Badge>
-          </Button>
-        </div>
-      )}
-
       {/* Spacer to prevent content being hidden behind bottom bar */}
       <div className="h-16 md:hidden" />
     </>
