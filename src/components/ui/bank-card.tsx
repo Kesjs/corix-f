@@ -1,10 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Eye, EyeOff, Copy, MoreVertical, Wifi, Lock } from "lucide-react"
+import { Eye, EyeOff, Copy, Wifi, Lock } from "lucide-react"
+import Image from "next/image"
 
 interface BankCardProps {
   cardNumber?: string
@@ -12,160 +12,96 @@ interface BankCardProps {
   expiryDate?: string
   cvv?: string
   balance?: number
-  cardType?: "visa" | "mastercard"
   isVirtual?: boolean
   isBlocked?: boolean
-  variant?: "full" | "compact"
 }
 
-function CardLogo({ cardType }: { cardType: "visa" | "mastercard" }) {
-  if (cardType === "mastercard") {
-    return (
-      <div className="flex">
-        <div className="w-9 h-6 bg-[#EB001B] rounded-full flex items-center justify-center text-[10px] font-bold text-white z-10">MC</div>
-        <div className="w-9 h-6 bg-[#F79E1B] rounded-full -ml-5 flex items-center justify-center text-[10px] font-bold text-white/90">MC</div>
-      </div>
-    )
-  }
-  return <div className="text-white font-bold text-xl tracking-widest">VISA</div>
-}
-
-function CardFace({
-  cardNumber,
-  holderName,
-  expiryDate,
-  cardType,
-  isVirtual,
-  isBlocked,
-  showFull,
-}: {
-  cardNumber: string
-  holderName: string
-  expiryDate: string
-  cardType: "visa" | "mastercard"
-  isVirtual?: boolean
-  isBlocked?: boolean
-  showFull: boolean
-}) {
-  const last4 = cardNumber.replace(/\s/g, "").slice(-4)
-  const displayNumber = showFull ? cardNumber : `•••• •••• •••• ${last4}`
-
-  return (
-    <div className="relative w-full max-w-sm mx-auto [transform:rotate(-2deg)] hover:[transform:rotate(0deg)] transition-transform duration-500">
-      <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-[#1a2338] via-[#0f172a] to-[#2a1b47] p-6 aspect-[1.586/1] flex flex-col justify-between border border-white/10">
-        
-        {/* Light effects */}
-        <div className="absolute -top-12 -right-12 w-56 h-56 bg-white/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-white/5 rounded-full blur-2xl" />
-
-        {/* Top bar */}
-        <div className="flex justify-between items-start">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-white/10 rounded-2xl flex items-center justify-center">
-              <span className="text-[#E8622C] font-bold text-2xl">C</span>
-            </div>
-            <div>
-              <p className="text-white font-semibold tracking-wider">CORIX FINANZA</p>
-              <p className="text-[10px] text-white/60 -mt-1">VIRTUAL CARD</p>
-            </div>
-          </div>
-          <Wifi className="w-6 h-6 text-white/70" />
-        </div>
-
-        {/* Chip */}
-        <div className="w-14 h-10 bg-gradient-to-br from-amber-300 to-yellow-600 rounded-lg shadow-inner relative">
-          <div className="absolute inset-[3px] bg-[#1a2338] rounded grid grid-cols-4 grid-rows-2 gap-px p-0.5">
-            {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="bg-white/10 rounded-sm" />
-            ))}
-          </div>
-        </div>
-
-        {/* Card Number */}
-        <div className="font-mono text-xl tracking-[3px] text-white">
-          {displayNumber}
-        </div>
-
-        {/* Bottom section */}
-        <div className="flex justify-between items-end">
-          <div>
-            <p className="text-[10px] text-white/60">TITULAIRE</p>
-            <p className="text-white font-medium tracking-wide text-sm">{holderName}</p>
-          </div>
-
-          <div className="text-right">
-            <p className="text-[10px] text-white/60">EXPIRE</p>
-            <p className="text-white font-medium">{expiryDate}</p>
-          </div>
-
-          <CardLogo cardType={cardType} />
-        </div>
-
-        {isVirtual && (
-          <Badge className="absolute top-6 right-6 bg-white/10 text-white text-xs px-2.5 py-0.5">
-            VIRTUELLE
-          </Badge>
-        )}
-
-        {isBlocked && (
-          <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
-            <div className="text-center">
-              <Lock className="w-12 h-12 text-red-500 mx-auto mb-2" />
-              <p className="text-white font-medium">Carte Bloquée</p>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
-
-export function BankCard(props: BankCardProps) {
-  const {
-    cardNumber = "4521 8765 4321 9876",
-    holderName = "BON KENNEDY",
-    expiryDate = "12/28",
-    cvv = "123",
-    balance = 2450,
-    cardType = "mastercard",
-    isVirtual = true,
-    isBlocked = false,
-    variant = "full"
-  } = props
-
+export function BankCard({
+  cardNumber = "4521 8765 4321 9876",
+  holderName = "BON KENNEDY",
+  expiryDate = "12/28",
+  cvv = "123",
+  balance = 2450,
+  isVirtual = true,
+  isBlocked = false,
+}: BankCardProps) {
   const [showDetails, setShowDetails] = useState(false)
   const [copied, setCopied] = useState("")
 
-  const handleCopy = (text: string, type: string) => {
+  const last4 = cardNumber.slice(-4)
+  const displayNumber = showDetails ? cardNumber : `•••• •••• •••• ${last4}`
+
+  const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text)
-    setCopied(type)
-    setTimeout(() => setCopied(""), 1800)
+    setCopied("number")
+    setTimeout(() => setCopied(""), 2000)
   }
 
   return (
-    <div className="w-full">
-      <CardFace
-        cardNumber={cardNumber}
-        holderName={holderName}
-        expiryDate={expiryDate}
-        cardType={cardType}
-        isVirtual={isVirtual}
-        isBlocked={isBlocked}
-        showFull={showDetails}
-      />
+    <div className="w-full max-w-md mx-auto">
+      <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-black aspect-[1.586/1] border border-white/10">
+        
+        {/* Texture fine */}
+        <div className="absolute inset-0 bg-[radial-gradient(#ffffff08_1px,transparent_1px)] [background-size:24px_24px]" />
 
-      {variant === "full" && (
-        <div className="flex justify-center gap-3 mt-6">
-          <Button variant="outline" size="sm" onClick={() => setShowDetails(!showDetails)}>
-            {showDetails ? <EyeOff className="mr-2" /> : <Eye className="mr-2" />}
-            {showDetails ? "Masquer" : "Voir détails"}
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => handleCopy(cardNumber.replace(/\s/g, ""), "number")}>
-            <Copy className="mr-2" />
-            {copied === "number" ? "Copié !" : "Copier numéro"}
-          </Button>
+        {/* En-tête */}
+        <div className="absolute top-6 left-6 flex items-center gap-3 z-10">
+          <div className="w-9 h-9 bg-white rounded-2xl flex items-center justify-center shadow">
+            <span className="text-black font-bold text-3xl">C</span>
+          </div>
+          <div>
+            <p className="text-white font-semibold text-xl tracking-wider">CORIX FINANZA</p>
+            {isVirtual && <p className="text-white/60 text-xs">CARTE VIRTUELLE</p>}
+          </div>
         </div>
-      )}
+
+        {/* Logo Mastercard */}
+        <div className="absolute top-6 right-6 z-10">
+          <Image 
+            src="/images/cards/mastercard-logo.png" 
+            alt="Mastercard" 
+            width={75} 
+            height={48}
+          />
+        </div>
+
+        {/* Chip Doré */}
+        <div className="absolute top-24 left-6 w-16 h-11 bg-gradient-to-br from-amber-300 via-yellow-400 to-amber-700 rounded-xl shadow-inner border border-amber-200/30" />
+
+        {/* Numéro */}
+        <div className="absolute bottom-20 left-6 font-mono text-2xl text-white tracking-[3px]">
+          {displayNumber}
+        </div>
+
+        {/* Infos bas */}
+        <div className="absolute bottom-8 left-6">
+          <p className="text-[10px] text-white/60">TITULAIRE</p>
+          <p className="text-white font-medium tracking-wider text-lg">{holderName}</p>
+        </div>
+
+        <div className="absolute bottom-8 right-6 text-right">
+          <p className="text-[10px] text-white/60">EXPIRE</p>
+          <p className="text-white font-medium">{expiryDate}</p>
+        </div>
+
+        {isVirtual && (
+          <Badge className="absolute top-20 right-6 bg-white/10 text-white text-xs px-3 py-1">
+            VIRTUELLE
+          </Badge>
+        )}
+      </div>
+
+      {/* Boutons */}
+      <div className="flex gap-3 mt-6">
+        <Button variant="outline" className="flex-1" onClick={() => setShowDetails(!showDetails)}>
+          {showDetails ? <EyeOff className="mr-2" /> : <Eye className="mr-2" />}
+          {showDetails ? "Masquer" : "Voir détails"}
+        </Button>
+        <Button variant="outline" className="flex-1" onClick={() => handleCopy(cardNumber)}>
+          <Copy className="mr-2" />
+          {copied ? "Copié !" : "Copier"}
+        </Button>
+      </div>
     </div>
   )
 }
