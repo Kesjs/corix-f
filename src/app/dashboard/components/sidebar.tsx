@@ -6,12 +6,12 @@ import { usePathname, useRouter } from "next/navigation"
 import { 
   LayoutDashboard, CreditCard, Send, PiggyBank, TrendingUp, 
   User, HelpCircle, LogOut, ChevronLeft, ChevronRight,
-  Shield, History, MessageCircle, Globe, Menu, X
+  Shield, History, MessageCircle, Globe, Menu, X, Loader2
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { LanguageSelector } from "@/components/ui/language-selector"
-import { createClient } from "@/utils/supabase/client"   // ← Adaptez le chemin si différent
+import { createClient } from "@/utils/supabase/client"
 
 interface UserSidebarProps {
   user: any
@@ -44,9 +44,13 @@ function SidebarContent({
 }) {
   const pathname = usePathname()
   const router = useRouter()
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
 
   const handleLogout = async () => {
-    if (onNavigate) onNavigate() // Ferme le menu mobile
+    if (onNavigate) onNavigate()
+    if (isLoggingOut) return
+
+    setIsLoggingOut(true)
 
     try {
       const supabase = createClient()
@@ -59,6 +63,8 @@ function SidebarContent({
     } catch (error) {
       console.error("Erreur déconnexion:", error)
       alert("Impossible de se déconnecter. Veuillez réessayer.")
+    } finally {
+      setIsLoggingOut(false)
     }
   }
 
@@ -132,15 +138,24 @@ function SidebarContent({
             )
           })}
 
-          {/* Bouton Déconnexion */}
+          {/* Bouton Déconnexion avec Spinner */}
           <button
             onClick={handleLogout}
-            className={`flex items-center gap-3 px-3 py-2 rounded-xl text-muted-foreground hover:bg-red-50 hover:text-red-600 transition-colors w-full text-left ${
+            disabled={isLoggingOut}
+            className={`flex items-center gap-3 px-3 py-2 rounded-xl text-muted-foreground hover:bg-red-50 hover:text-red-600 transition-colors w-full text-left disabled:opacity-70 ${
               collapsed ? "justify-center" : ""
             }`}
           >
-            <LogOut className="w-5 h-5 shrink-0" />
-            {!collapsed && <span className="text-sm">Déconnexion</span>}
+            {isLoggingOut ? (
+              <Loader2 className="w-5 h-5 shrink-0 animate-spin" />
+            ) : (
+              <LogOut className="w-5 h-5 shrink-0" />
+            )}
+            {!collapsed && (
+              <span className="text-sm">
+                {isLoggingOut ? "Déconnexion en cours..." : "Déconnexion"}
+              </span>
+            )}
           </button>
         </div>
 
