@@ -124,7 +124,7 @@ export default function DashboardPage() {
         <div className="hidden md:flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold text-[#0B1F3A]">Tableau de bord</h1>
-            <p className="text-muted-foreground">Bonjour, {firstName} 👋</p>
+            <p className="text-muted-foreground">Bonjour, {firstName} </p>
           </div>
           <div className="flex items-center gap-3">
             <LanguageSelector variant="simple" />
@@ -254,8 +254,7 @@ export default function DashboardPage() {
               expiryDate="12/28"
               cvv="123"
               balance={stats.balance}
-              cardType="visa"
-              cardStyle="premium"
+              cardType="mastercard"
               isVirtual={true}
               variant="compact"
             />
@@ -385,7 +384,7 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="bg-emerald-50 rounded-xl p-3">
-                  <p className="text-sm font-medium text-emerald-700 mb-1">💪 Excellente habitude</p>
+                  <p className="text-sm font-medium text-emerald-700 mb-1">Excellente habitude</p>
                   <p className="text-xs text-emerald-700/70">
                     Vous avez épargné 150 € ce mois-ci, soit 15 % de plus que le mois dernier.
                   </p>
