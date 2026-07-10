@@ -145,7 +145,7 @@ const calculateScale = (desiredWidth: number) => {
 };
 
 export const CreditCard = ({
-    company = "Untitled.",
+    company = "CORIX FINANZA",
     cardNumber = "1234 1234 1234 1234",
     cardHolder = "OLIVIA RHYE",
     cardExpiration = "06/28",
@@ -235,11 +235,18 @@ export const CreditCard = ({
                     </div>
                 </div>
 
-                {showChip && (
-                    <div className="relative px-1">
-                        <div className="w-9 h-7 rounded-md bg-gradient-to-br from-amber-300 via-yellow-400 to-amber-600 shadow-inner border border-amber-200/40" />
-                    </div>
-                )}
+               {showChip && (
+  <div className="relative px-1">
+    <Image
+      src="https://static.vecteezy.com/system/resources/thumbnails/009/400/645/small/sim-card-clipart-design-illustration-free-png.png"
+      alt="Puce carte"
+      width={36}
+      height={28}
+      className="object-contain"
+    />
+  </div>
+)}
+
 
                 <div className="relative px-1">
                     <p className={cx("text-md leading-[normal] font-semibold tracking-[2px] tabular-nums", styles[type].footerText)}>
