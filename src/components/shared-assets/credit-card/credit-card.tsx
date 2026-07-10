@@ -224,7 +224,7 @@ export const CreditCard = ({
                 {showChip && (
                     <div className="relative px-1">
                         <Image
-                            src="https://static.vecteezy.com/system/resources/thumbnails/009/400/645/small/sim-card-clipart-design-illustration-free-png.png"
+                            src="https://static.vecteezy.com/system/resources/previews/013/139/346/non_2x/golden-sim-chip-card-microchip-for-payment-or-credit-card-vector.jpg"
                             alt="Puce carte"
                             width={36}
                             height={28}
