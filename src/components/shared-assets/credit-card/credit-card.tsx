@@ -221,17 +221,18 @@ export const CreditCard = ({
                     </div>
                 </div>
 
-                {showChip && (
-                    <div className="relative px-1">
-                        <Image
-                            src="https://static.vecteezy.com/system/resources/previews/013/139/346/non_2x/golden-sim-chip-card-microchip-for-payment-or-credit-card-vector.jpg"
-                            alt="Puce carte"
-                            width={36}
-                            height={28}
-                            className="object-contain"
-                        />
-                    </div>
-                )}
+                {{showChip && (
+  <div className="relative px-1">
+    <Image
+      src="/images/cards/chip.jpg"
+      alt="Puce carte"
+      width={36}
+      height={28}
+      className="rounded-md object-cover"
+    />
+  </div>
+)}
+
 
                 <div className="relative px-1">
                     <p className={cx("text-md leading-[normal] font-semibold tracking-[2px] tabular-nums", styles[type].footerText)}>
