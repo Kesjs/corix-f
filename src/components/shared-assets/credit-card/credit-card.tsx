@@ -224,7 +224,7 @@ export const CreditCard = ({
                 {{showChip && (
   <div className="relative px-1">
     <Image
-      src="/images/cards/chip.jpg"
+      src="/images/cards/Chip.jpg"
       alt="Puce carte"
       width={36}
       height={28}
