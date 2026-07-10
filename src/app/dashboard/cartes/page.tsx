@@ -15,15 +15,19 @@ export default function CartesPage() {
       </div>
 
       {/* Carte */}
-      <div className="mb-6 flex justify-center md:justify-start">
-        <CreditCardWidget
-          type="gray-dark"
-          company="Corix Finanza"
-          cardHolder="BON KENNEDY"
-          cardExpiration="12/28"
-          cardNumber="4521 8765 4321 9876"
-        />
-      </div>
+      
+<div className="mb-6 flex justify-center md:justify-start">
+  <div className="w-full max-w-sm">
+    <CreditCardWidget
+      type="gray-dark"
+      company="Corix Finanza"
+      cardHolder="BON KENNEDY"
+      cardExpiration="12/28"
+      cardNumber="4521 8765 4321 9876"
+    />
+  </div>
+</div>
+
 
       {/* Statut */}
       <div className="flex items-center gap-2 mb-6">
