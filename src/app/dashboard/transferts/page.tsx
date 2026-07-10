@@ -5,15 +5,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Navigation } from "@/components/ui/navigation"
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogDescription, 
-  DialogFooter 
-} from "@/components/ui/dialog"
-import { Search, Plus, QrCode, Building2 } from "lucide-react"
+import { ActionDialog } from "@/components/ui/action-dialog"
+import { Search, Plus, QrCode, Building2, ShieldCheck } from "lucide-react"
 import { useLanguage } from "@/contexts/language-context"
 
 export default function TransfertsPage() {
@@ -125,33 +118,28 @@ export default function TransfertsPage() {
         </div>
       </main>
 
-      <Dialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Validation sécurisée</DialogTitle>
-            <DialogDescription>
-              Entrez votre code OTP à 6 chiffres pour confirmer le transfert de {(parseFloat(amount) * 1.01).toFixed(2)} €.
-            </DialogDescription>
-          </DialogHeader>
-          <Input 
-            type="text" 
-            inputMode="numeric"
-            pattern="[0-9]*"
-            maxLength={6}
-            placeholder="000000" 
-            value={otp} 
-            onChange={(e) => {
-              const val = e.target.value.replace(/[^0-9]/g, '')
-              setOtp(val)
-            }} 
-            className="text-center text-2xl tracking-[0.5em] h-14"
-          />
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsConfirmOpen(false)}>Annuler</Button>
-            <Button onClick={handleConfirm} disabled={otp.length !== 6}>Confirmer</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ActionDialog
+        open={isConfirmOpen}
+        onOpenChange={setIsConfirmOpen}
+        icon={ShieldCheck}
+        title="Validation sécurisée"
+        description={`Entrez votre code OTP à 6 chiffres pour confirmer le transfert de ${(parseFloat(amount) * 1.01).toFixed(2)} € à ${selectedContact?.name}.`}
+        showCancel={true}
+        confirmLabel="Confirmer"
+        onConfirm={handleConfirm}
+        confirmDisabled={otp.length !== 6}
+      >
+        <Input 
+          type="text" 
+          inputMode="numeric"
+          pattern="[0-9]*"
+          maxLength={6}
+          placeholder="000000" 
+          value={otp} 
+          onChange={(e) => setOtp(e.target.value.replace(/[^0-9]/g, ''))} 
+          className="text-center text-2xl tracking-[0.5em] h-14"
+        />
+      </ActionDialog>
     </div>
   )
 }
