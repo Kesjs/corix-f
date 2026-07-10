@@ -221,7 +221,7 @@ export const CreditCard = ({
                     </div>
                 </div>
 
-                {{showChip && (
+                {showChip && (
   <div className="relative px-1">
     <Image
       src="/images/cards/Chip.jpg"
