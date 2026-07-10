@@ -1,15 +1,16 @@
 "use client"
-import { MobileBottomBar } from "@/components/ui/mobile-bottom-bar"
 
 import { useState } from "react"
+import { MobileBottomBar } from "@/components/ui/mobile-bottom-bar"
 import { CreditCard as CreditCardWidget } from "@/components/shared-assets/credit-card/credit-card"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Eye, EyeOff, Lock, Settings, ArrowUpRight } from "lucide-react"
+import { Eye, EyeOff, Lock, Settings, ArrowUpRight, Copy, Check } from "lucide-react"
 
 export default function CartesPage() {
   const [showDetails, setShowDetails] = useState(false)
+  const [copiedField, setCopiedField] = useState<string | null>(null)
 
   const cardData = {
     number: "4521 8765 4321 9876",
@@ -63,20 +64,36 @@ export default function CartesPage() {
 
       {/* Détails sensibles — affichés seulement au clic */}
       {showDetails && (
-        <Card className="border-0 shadow-sm mb-6 bg-[#0B1F3A]">
-          <CardContent className="p-4 space-y-2.5">
-            <div className="flex justify-between text-sm">
-              <span className="text-white/60">Numéro complet</span>
-              <span className="font-mono text-white tracking-wider">{cardData.number}</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-white/60">CVV</span>
-              <span className="font-mono text-white tracking-wider">{cardData.cvv}</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-white/60">Expiration</span>
-              <span className="font-mono text-white tracking-wider">{cardData.expiration}</span>
-            </div>
+        <Card className="border border-border shadow-none mb-6">
+          <CardContent className="p-4 space-y-4">
+            {[
+              { label: "Numéro complet", value: cardData.number, key: "number" },
+              { label: "CVV", value: cardData.cvv, key: "cvv" },
+              { label: "Expiration", value: cardData.expiration, key: "expiration" },
+            ].map((field) => (
+              <div key={field.key} className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-muted-foreground mb-0.5">{field.label}</p>
+                  <p className="font-mono text-sm font-medium tracking-wider">{field.value}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(field.value)
+                    setCopiedField(field.key)
+                    setTimeout(() => setCopiedField(null), 1500)
+                  }}
+                  className="w-8 h-8 rounded-full border border-border flex items-center justify-center hover:bg-secondary/60 transition-colors shrink-0"
+                  aria-label={`Copier ${field.label}`}
+                >
+                  {copiedField === field.key ? (
+                    <Check className="w-3.5 h-3.5 text-emerald-600" />
+                  ) : (
+                    <Copy className="w-3.5 h-3.5 text-muted-foreground" />
+                  )}
+                </button>
+              </div>
+            ))}
           </CardContent>
         </Card>
       )}
@@ -130,10 +147,10 @@ export default function CartesPage() {
           </div>
         </CardContent>
       </Card>
-      <div className="md:hidden">
-  <MobileBottomBar userType="client" unreadNotifications={3} unreadMessages={1} />
-</div>
 
+      <div className="md:hidden">
+        <MobileBottomBar userType="client" unreadNotifications={3} unreadMessages={1} />
+      </div>
     </div>
   )
 }
