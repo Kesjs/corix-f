@@ -1,22 +1,36 @@
 "use client"
 
 import { useState } from "react"
-import { MobileBottomBar } from "@/components/ui/mobile-bottom-bar"
 import { CreditCard as CreditCardWidget } from "@/components/shared-assets/credit-card/credit-card"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Eye, EyeOff, Lock, Settings, ArrowUpRight, Copy, Check } from "lucide-react"
+import { ActionDialog } from "@/components/ui/action-dialog"
+import { Eye, EyeOff, Lock, Unlock, Settings, ArrowUpRight, Copy, Check } from "lucide-react"
 
 export default function CartesPage() {
   const [showDetails, setShowDetails] = useState(false)
   const [copiedField, setCopiedField] = useState<string | null>(null)
+  const [frozen, setFrozen] = useState(false)
+  const [freezeDialog, setFreezeDialog] = useState(false)
+  const [settingsDialog, setSettingsDialog] = useState(false)
 
   const cardData = {
     number: "4521 8765 4321 9876",
     holder: "BON KENNEDY",
     expiration: "12/28",
     cvv: "123",
+  }
+
+  const toggleFreeze = () => {
+    setFrozen((prev) => !prev)
+    setFreezeDialog(true)
+  }
+
+  const copyField = (key: string, value: string) => {
+    navigator.clipboard.writeText(value)
+    setCopiedField(key)
+    setTimeout(() => setCopiedField(null), 1500)
   }
 
   return (
@@ -27,42 +41,56 @@ export default function CartesPage() {
       </div>
 
       <div className="mb-6 flex justify-center md:justify-start">
-        <div className="w-full max-w-sm">
+        <div className="w-full max-w-sm relative">
+          {frozen && (
+            <div className="absolute inset-0 z-10 bg-black/40 rounded-2xl flex items-center justify-center backdrop-blur-[1px]">
+              <Badge className="bg-white text-[#0B1F3A] border-0">Carte bloquée</Badge>
+            </div>
+          )}
           <CreditCardWidget
             type="gray-dark"
             company="Corix Finanza"
             cardHolder={cardData.holder}
             cardExpiration={cardData.expiration}
-            cardNumber={cardData.number}
+            cardNumber={showDetails ? cardData.number : "•••• •••• •••• 9876"}
           />
         </div>
       </div>
 
       <div className="flex items-center gap-2 mb-6">
-        <Badge variant="success">Active</Badge>
+        <Badge variant={frozen ? "outline" : "success"}>{frozen ? "Bloquée" : "Active"}</Badge>
         <Badge variant="outline">Virtuelle</Badge>
       </div>
 
       <div className="grid grid-cols-3 gap-3 mb-4">
         <Button
           variant="outline"
-          className="flex flex-col h-auto py-3 gap-1.5"
+          className="flex flex-col h-auto py-3 gap-1.5 active:scale-95 transition-transform"
           onClick={() => setShowDetails((v) => !v)}
         >
           {showDetails ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
           <span className="text-xs">{showDetails ? "Masquer" : "Voir détails"}</span>
         </Button>
-        <Button variant="outline" className="flex flex-col h-auto py-3 gap-1.5">
-          <Lock className="w-4 h-4" />
-          <span className="text-xs">Bloquer</span>
+        <Button
+          variant={frozen ? "default" : "outline"}
+          className={`flex flex-col h-auto py-3 gap-1.5 active:scale-95 transition-transform ${
+            frozen ? "bg-[#E8622C] hover:bg-[#D4551F] text-white" : ""
+          }`}
+          onClick={toggleFreeze}
+        >
+          {frozen ? <Unlock className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
+          <span className="text-xs">{frozen ? "Débloquer" : "Bloquer"}</span>
         </Button>
-        <Button variant="outline" className="flex flex-col h-auto py-3 gap-1.5">
+        <Button
+          variant="outline"
+          className="flex flex-col h-auto py-3 gap-1.5 active:scale-95 transition-transform"
+          onClick={() => setSettingsDialog(true)}
+        >
           <Settings className="w-4 h-4" />
           <span className="text-xs">Paramètres</span>
         </Button>
       </div>
 
-      {/* Détails sensibles — affichés seulement au clic */}
       {showDetails && (
         <Card className="border border-border shadow-none mb-6">
           <CardContent className="p-4 space-y-4">
@@ -78,12 +106,8 @@ export default function CartesPage() {
                 </div>
                 <button
                   type="button"
-                  onClick={() => {
-                    navigator.clipboard.writeText(field.value)
-                    setCopiedField(field.key)
-                    setTimeout(() => setCopiedField(null), 1500)
-                  }}
-                  className="w-8 h-8 rounded-full border border-border flex items-center justify-center hover:bg-secondary/60 transition-colors shrink-0"
+                  onClick={() => copyField(field.key, field.value)}
+                  className="w-8 h-8 rounded-full border border-border flex items-center justify-center hover:bg-secondary/60 active:scale-90 transition-all shrink-0"
                   aria-label={`Copier ${field.label}`}
                 >
                   {copiedField === field.key ? (
@@ -113,7 +137,7 @@ export default function CartesPage() {
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Paiements en ligne</span>
-            <Badge variant="success">Activés</Badge>
+            <Badge variant={frozen ? "outline" : "success"}>{frozen ? "Suspendus" : "Activés"}</Badge>
           </div>
         </CardContent>
       </Card>
@@ -129,7 +153,7 @@ export default function CartesPage() {
               { label: "Abonnement Netflix", amount: -12.99, date: "12 janv." },
               { label: "Restaurant", amount: -34.0, date: "10 janv." },
             ].map((t, i) => (
-              <div key={i} className="flex items-center justify-between py-2.5 px-1">
+              <div key={i} className="flex items-center justify-between py-2.5 px-1 rounded-xl hover:bg-secondary/40 transition-colors">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-full bg-red-500/10 flex items-center justify-center">
                     <ArrowUpRight className="w-4 h-4 text-red-500" />
@@ -148,9 +172,27 @@ export default function CartesPage() {
         </CardContent>
       </Card>
 
-      <div className="md:hidden">
-        <MobileBottomBar userType="client" unreadNotifications={3} unreadMessages={1} />
-      </div>
+      <ActionDialog
+        open={freezeDialog}
+        onOpenChange={setFreezeDialog}
+        icon={frozen ? Lock : Unlock}
+        iconColor={frozen ? "text-red-500" : "text-emerald-600"}
+        iconBg={frozen ? "bg-red-500/10" : "bg-emerald-500/10"}
+        title={frozen ? "Carte bloquée" : "Carte débloquée"}
+        description={
+          frozen
+            ? "Votre carte est temporairement bloquée. Aucun paiement ne sera accepté jusqu'à son déblocage."
+            : "Votre carte est de nouveau active et peut être utilisée normalement."
+        }
+      />
+
+      <ActionDialog
+        open={settingsDialog}
+        onOpenChange={setSettingsDialog}
+        icon={Settings}
+        title="Paramètres de la carte"
+        description="La gestion avancée des paramètres (plafonds, zones géographiques, e-commerce) arrive bientôt."
+      />
     </div>
   )
 }
