@@ -100,8 +100,8 @@ export default function DashboardPage() {
             <h1 className="font-semibold text-[#0B1F3A] text-base leading-tight truncate">
               Bonjour {firstName}
             </h1>
-            <p className="text-xs text-muted-foreground tabular-nums">
-              {stats.balance.toLocaleString("fr-FR")} € disponible
+            <p className="text-xs text-muted-foreground">
+              Bienvenue sur votre espace
             </p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
@@ -168,30 +168,33 @@ export default function DashboardPage() {
           </Card>
         )}
 
-        {/* Balance Hero */}
-        <div className="rounded-3xl bg-gradient-to-br from-[#0B1F3A] to-[#132C52] p-5 md:p-6 mb-4 md:mb-6 shadow-lg">
-          <p className="text-xs text-white/60 mb-1">Solde disponible</p>
-          <p className="text-4xl md:text-5xl font-bold text-white tabular-nums tracking-tight mb-2">
-            {stats.balance.toLocaleString("fr-FR")} €
-          </p>
-          <div className="flex items-center gap-2 mb-5">
-            <Badge className="bg-emerald-400/20 text-emerald-300 border-0 text-xs">+12,5% ce mois</Badge>
-            <span className="text-xs text-white/50">vs mois dernier</span>
+        {/* Balance Hero — compact */}
+        <div className="rounded-2xl bg-gradient-to-br from-[#0B1F3A] to-[#132C52] p-4 md:p-5 mb-4 md:mb-6 shadow-md">
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <p className="text-[11px] text-white/60 mb-0.5">Solde disponible</p>
+              <p className="text-2xl md:text-3xl font-bold text-white tabular-nums tracking-tight">
+                {stats.balance.toLocaleString("fr-FR")} €
+              </p>
+            </div>
+            <Badge className="bg-emerald-400/20 text-emerald-300 border-0 text-xs">+12,5%</Badge>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2">
             <Button
+              size="sm"
               variant="outline"
               className="bg-white/10 border-white/20 text-white hover:bg-white/20 hover:text-white"
               onClick={() => {}}
             >
-              <Plus className="w-4 h-4 mr-2" />
+              <Plus className="w-4 h-4 mr-1.5" />
               Recharger
             </Button>
             <Button
+              size="sm"
               className="bg-[#E8622C] hover:bg-[#D4551F] text-white border-0"
               onClick={() => router.push("/dashboard/transferts")}
             >
-              <Send className="w-4 h-4 mr-2" />
+              <Send className="w-4 h-4 mr-1.5" />
               Transférer
             </Button>
           </div>
@@ -245,9 +248,9 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        {/* Bank Card — signature element, slightly tilted */}
-        <div className="mb-4 md:mb-6 flex justify-center md:justify-start">
-          <div className="w-full max-w-sm md:max-w-none [transform:rotate(-1.5deg)] hover:[transform:rotate(0deg)] transition-transform duration-300 drop-shadow-xl">
+        {/* Bank Card */}
+        <div className="mb-4 md:mb-6 flex justify-center">
+          <div className="w-full max-w-sm md:[transform:rotate(-1.5deg)] md:hover:[transform:rotate(0deg)] transition-transform duration-300 drop-shadow-xl">
             <CreditCardWidget
               type="gray-dark"
               company="Corix Finanza"
