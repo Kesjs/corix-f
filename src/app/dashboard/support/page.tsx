@@ -3,21 +3,15 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent } from "@/components/ui/card"
+import { Textarea } from "@/components/ui/textarea"
 import { Navigation } from "@/components/ui/navigation"
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
-  DialogFooter 
-} from "@/components/ui/dialog"
-import { Send, MessageCircle, User, Bot } from "lucide-react"
+import { ActionDialog } from "@/components/ui/action-dialog"
+import { Send, Bot, User, MessageSquarePlus, Clock, CheckCircle2 } from "lucide-react"
 
 export default function SupportPage() {
-  const [isNewChatOpen, setIsNewChatOpen] = useState(false)
+  const [isNewTicketOpen, setIsNewTicketOpen] = useState(false)
   const [message, setMessage] = useState("")
-  
+
   // Simulation d'une conversation
   const [messages, setMessages] = useState([
     { id: 1, sender: "bot", text: "Bonjour ! Comment puis-je vous aider aujourd'hui ?" },
@@ -27,7 +21,11 @@ export default function SupportPage() {
     if (!message.trim()) return
     setMessages([...messages, { id: Date.now(), sender: "user", text: message }])
     setMessage("")
-    // Ici, tu déclencherais l'appel à ton API de support
+  }
+
+  const handleCreateTicket = () => {
+    console.log("Nouveau ticket ouvert")
+    setIsNewTicketOpen(false)
   }
 
   return (
@@ -38,7 +36,17 @@ export default function SupportPage() {
         <h1 className="text-xl font-semibold text-primary">Chat Support</h1>
       </header>
 
-      <main className="p-4 md:p-8 h-[calc(100vh-64px)] flex flex-col">
+      <main className="p-4 md:p-8 h-[calc(100vh-64px)] flex flex-col max-w-4xl mx-auto">
+        
+        {/* Header avec bouton nouveau */}
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl font-bold text-foreground">Support</h1>
+          <Button onClick={() => setIsNewTicketOpen(true)} className="gap-2">
+            <MessageSquarePlus className="w-4 h-4" /> Nouveau ticket
+          </Button>
+        </div>
+
+        {/* Zone de chat */}
         <div className="flex-1 overflow-y-auto space-y-4 mb-4">
           {messages.map((msg) => (
             <div key={msg.id} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
@@ -54,7 +62,7 @@ export default function SupportPage() {
           ))}
         </div>
 
-        {/* Input Area */}
+        {/* Zone d'input */}
         <div className="flex gap-2 p-2 bg-card border rounded-lg">
           <Input 
             placeholder="Écrivez votre message..." 
@@ -68,6 +76,22 @@ export default function SupportPage() {
           </Button>
         </div>
       </main>
+
+      {/* Modale Nouveau Ticket via ActionDialog */}
+      <ActionDialog
+        open={isNewTicketOpen}
+        onOpenChange={setIsNewTicketOpen}
+        title="Ouvrir un nouveau ticket"
+        description="Décrivez votre problème, notre équipe vous répondra rapidement."
+        confirmLabel="Envoyer"
+        onConfirm={handleCreateTicket}
+        showCancel={true}
+      >
+        <div className="space-y-4">
+          <Input placeholder="Sujet du ticket" />
+          <Textarea placeholder="Votre message..." className="min-h-[120px]" />
+        </div>
+      </ActionDialog>
     </div>
   )
 }
