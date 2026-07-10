@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { BankCard } from "@/components/ui/bank-card"
+import { CreditCard as CreditCardWidget } from "@/components/shared-assets/credit-card/credit-card"
 import { NotificationCenter } from "@/components/ui/notification-center"
 import { MobileBottomBar } from "@/components/ui/mobile-bottom-bar"
 import { LanguageSelector } from "@/components/ui/language-selector"
@@ -248,15 +248,12 @@ export default function DashboardPage() {
         {/* Bank Card — signature element, slightly tilted */}
         <div className="mb-4 md:mb-6 flex justify-center md:justify-start">
           <div className="w-full max-w-sm md:max-w-none [transform:rotate(-1.5deg)] hover:[transform:rotate(0deg)] transition-transform duration-300 drop-shadow-xl">
-            <BankCard
+            <CreditCardWidget
+              type="gray-dark"
+              company="Corix Finanza"
+              cardHolder={`${user?.profile?.first_name?.toUpperCase() || ""} ${user?.profile?.last_name?.toUpperCase() || ""}`.trim() || "UTILISATEUR"}
+              cardExpiration="12/28"
               cardNumber="4521 8765 4321 9876"
-              holderName={`${user?.profile?.first_name?.toUpperCase() || ""} ${user?.profile?.last_name?.toUpperCase() || ""}`.trim() || "UTILISATEUR"}
-              expiryDate="12/28"
-              cvv="123"
-              balance={stats.balance}
-              cardType="mastercard"
-              isVirtual={true}
-              variant="compact"
             />
           </div>
         </div>
