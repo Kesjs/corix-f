@@ -1,12 +1,22 @@
 "use client"
 
+import { useState } from "react"
 import { CreditCard as CreditCardWidget } from "@/components/shared-assets/credit-card/credit-card"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Eye, Lock, Settings, ArrowUpRight, ArrowDownLeft, Send } from "lucide-react"
+import { Eye, EyeOff, Lock, Settings, ArrowUpRight } from "lucide-react"
 
 export default function CartesPage() {
+  const [showDetails, setShowDetails] = useState(false)
+
+  const cardData = {
+    number: "4521 8765 4321 9876",
+    holder: "BON KENNEDY",
+    expiration: "12/28",
+    cvv: "123",
+  }
+
   return (
     <div className="p-6 pb-28 md:pb-6 max-w-2xl mx-auto md:mx-0">
       <div className="mb-6">
@@ -14,32 +24,31 @@ export default function CartesPage() {
         <p className="text-sm text-muted-foreground">Gérez votre carte virtuelle Corix Finanza</p>
       </div>
 
-      {/* Carte */}
-      
-<div className="mb-6 flex justify-center md:justify-start">
-  <div className="w-full max-w-sm">
-    <CreditCardWidget
-      type="gray-dark"
-      company="Corix Finanza"
-      cardHolder="BON KENNEDY"
-      cardExpiration="12/28"
-      cardNumber="4521 8765 4321 9876"
-    />
-  </div>
-</div>
+      <div className="mb-6 flex justify-center md:justify-start">
+        <div className="w-full max-w-sm">
+          <CreditCardWidget
+            type="gray-dark"
+            company="Corix Finanza"
+            cardHolder={cardData.holder}
+            cardExpiration={cardData.expiration}
+            cardNumber={cardData.number}
+          />
+        </div>
+      </div>
 
-
-      {/* Statut */}
       <div className="flex items-center gap-2 mb-6">
         <Badge variant="success">Active</Badge>
         <Badge variant="outline">Virtuelle</Badge>
       </div>
 
-      {/* Actions rapides */}
-      <div className="grid grid-cols-3 gap-3 mb-6">
-        <Button variant="outline" className="flex flex-col h-auto py-3 gap-1.5">
-          <Eye className="w-4 h-4" />
-          <span className="text-xs">Voir détails</span>
+      <div className="grid grid-cols-3 gap-3 mb-4">
+        <Button
+          variant="outline"
+          className="flex flex-col h-auto py-3 gap-1.5"
+          onClick={() => setShowDetails((v) => !v)}
+        >
+          {showDetails ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+          <span className="text-xs">{showDetails ? "Masquer" : "Voir détails"}</span>
         </Button>
         <Button variant="outline" className="flex flex-col h-auto py-3 gap-1.5">
           <Lock className="w-4 h-4" />
@@ -51,7 +60,26 @@ export default function CartesPage() {
         </Button>
       </div>
 
-      {/* Infos carte */}
+      {/* Détails sensibles — affichés seulement au clic */}
+      {showDetails && (
+        <Card className="border-0 shadow-sm mb-6 bg-[#0B1F3A]">
+          <CardContent className="p-4 space-y-2.5">
+            <div className="flex justify-between text-sm">
+              <span className="text-white/60">Numéro complet</span>
+              <span className="font-mono text-white tracking-wider">{cardData.number}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-white/60">CVV</span>
+              <span className="font-mono text-white tracking-wider">{cardData.cvv}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-white/60">Expiration</span>
+              <span className="font-mono text-white tracking-wider">{cardData.expiration}</span>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <Card className="border-0 shadow-sm mb-6">
         <CardHeader className="pb-2">
           <CardTitle className="text-base">Informations</CardTitle>
@@ -72,7 +100,6 @@ export default function CartesPage() {
         </CardContent>
       </Card>
 
-      {/* Transactions récentes de la carte */}
       <Card className="border-0 shadow-sm">
         <CardHeader className="pb-2">
           <CardTitle className="text-base">Transactions récentes</CardTitle>
