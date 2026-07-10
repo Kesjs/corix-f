@@ -1,4 +1,5 @@
 "use client"
+import { MobileBottomBar } from "@/components/ui/mobile-bottom-bar"
 
 import { useState } from "react"
 import { CreditCard as CreditCardWidget } from "@/components/shared-assets/credit-card/credit-card"
@@ -129,6 +130,10 @@ export default function CartesPage() {
           </div>
         </CardContent>
       </Card>
+      <div className="md:hidden">
+  <MobileBottomBar userType="client" unreadNotifications={3} unreadMessages={1} />
+</div>
+
     </div>
   )
 }
